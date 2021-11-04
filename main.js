@@ -2,8 +2,8 @@ import { debug as ghactionCoreDebug, error as ghactionCoreError, getInput as gha
 import { isJSON as adIsJSON, isString as adIsString } from "@hugoalh/advanced-determine";
 import { stringParse as mmStringParse } from "@hugoalh/more-method";
 const ghactionUserAgent = "TriggerPipedreamWorkflow.GitHubAction/2.0.0";
-let rePipedreamSDKURL = /^https:\/\/sdk\.m\.pipedream\.net\/pipelines\/(?<key>[-0-9_a-z]+)\/events$/giu;
-let rePipedreamWebhookURL = /^https:\/\/(?<key>[-0-9_a-z]+)\.m\.pipedream\.net$/giu;
+let rePipedreamSDKURL = /^https:\/\/sdk\.m\.pipedream\.net\/pipelines\/(?<key>[\da-z_-]+)\/events$/giu;
+let rePipedreamWebhookURL = /^https:\/\/(?<key>[\da-z_-]+)\.m\.pipedream\.net$/giu;
 /**
  * @private
  * @function $importInput

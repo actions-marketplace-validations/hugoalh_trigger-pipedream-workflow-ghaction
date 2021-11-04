@@ -73,7 +73,11 @@ jobs:
 
 #### PowerShell (`+powershell`)
 
-> **⚠ Important:** This entrypoint is suitable for advanced user.
+> **⚠ Important:**
+> - This entrypoint has some limitations:
+>   - Input `key` must be a webhook key.
+>   - No input `method` and always use `"webhook"`.
+> - This entrypoint is suitable for advanced user.
 
 ```yml
 jobs:
