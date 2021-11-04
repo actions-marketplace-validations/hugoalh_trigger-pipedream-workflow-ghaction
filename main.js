@@ -1,134 +1,114 @@
-/*==================
-[GitHub Action] Send To Pipedream
-	Language:
-		NodeJS/12.13.0
-==================*/
-const advancedDetermine = require("@hugoalh/advanced-determine"),
-	githubAction = {
-		core: require("@actions/core"),
-		github: require("@actions/github")
-	},
-	jsonFlatten = require("flat").flatten,
-	pipedreamSDK = require("@pipedreamhq/sdk"),
-	regexpEscape = require("escape-string-regexp");
+import { debug as ghactionCoreDebug, error as ghactionCoreError, getInput as ghactionCoreGetInput, info as ghactionCoreInformation, warning as ghactionCoreWarning } from "@actions/core";
+import { isJSON as adIsJSON, isString as adIsString } from "@hugoalh/advanced-determine";
+import { stringParse as mmStringParse } from "@hugoalh/more-method";
+import nodeFetch from "node-fetch";
+import axios from "axios";
+const ghactionUserAgent = "TriggerPipedreamWorkflow.GitHubAction/2.0.0";
+/**
+ * @private
+ * @function $importInput
+ * @param {string} key
+ * @returns {string}
+ */
+function $importInput(key) {
+	ghactionCoreDebug(`Import input \`${key}\`.`);
+	return ghactionCoreGetInput(key);
+};
+/**
+ * @private
+ * @function pipedreamSDKRework
+ * @param {string} key
+ * @param {object} payload
+ * @returns {object}
+ */
+function pipedreamSDKRework(key, payload = {}) {
+	return axios.request({
+		data: JSON.stringify({
+			"raw_event": payload
+		}),
+		headers: {
+			"content-type": "application/json",
+			"user-agent": "pdsdk:javascript/1",
+			"x-pd-sdk-version": "0.3.2"
+		},
+		method: "post",
+		url: `https://sdk.m.pipedream.net/pipelines/${key}/events`
+	});
+};
 (async () => {
-	githubAction.core.info(`Import workflow argument. ([GitHub Action] Send To Pipedream)`);
-	let payload = githubAction.core.getInput("payload"),
-		sdkKey = githubAction.core.getInput("key"),
-		variableSystem = {
-			join: githubAction.core.getInput("variable_join"),
-			prefix: githubAction.core.getInput("variable_prefix"),
-			suffix: githubAction.core.getInput("variable_suffix")
+	ghactionCoreInformation(`Import inputs.`);
+	let dryRun = mmStringParse($importInput("dryrun"));
+	if (typeof dryRun !== "boolean") {
+		throw new TypeError(`Input \`dryrun\` must be type of boolean!`);
+	};
+	let key = $importInput("key");
+	if (adIsString(key, { singleLine: true }) !== true) {
+		throw new TypeError(`Input \`key\` must be type of string (non-nullable)!`);
+	};
+	let method = $importInput("method");
+	if (adIsString(method, { singleLine: true }) === false) {
+		throw new TypeError(`Input \`method\` must be type of string!`);
+	};
+
+	if (
+		key.search(/^https:\/\/sdk\.m\.pipedream\.net\/pipelines\/[\da-z_-]+\/events$/giu) === 0 ||
+		key.search(/^[-0-9_a-z]+$/giu) === 0
+	) {
+		if (adIsString(method) !== true) {
+			method = "sdk";
 		};
-	githubAction.core.info(`Analysis workflow argument. ([GitHub Action] Send To Pipedream)`);
-	if (advancedDetermine.isString(payload) !== true) {
-		throw new TypeError(`Argument "payload" must be type of string (non-nullable)! ([GitHub Action] Send To Pipedream)`);
+		key = key.replace(/^https:\/\/sdk\.m\.pipedream\.net\/pipelines\/(?<key>[-0-9_a-z]+)\/events$/giu, "$<key>");
+	} else if (key) { } else { };// TODO
+
+	let payload = mmStringParse($importInput("payload"));
+	if (adIsJSON(payload) === false) {
+		throw new TypeError(`Input \`payload\` must be type of JSON!`);
 	};
-	if (advancedDetermine.isStringSingleLine(sdkKey, { allowWhitespace: false }) !== true) {
-		throw new TypeError(`Argument "key" must be type of string (non-nullable)! ([GitHub Action] Send To Pipedream)`);
-	};
-	if (advancedDetermine.isStringSingleLine(variableSystem.join, { allowWhitespace: false }) !== true) {
-		throw new TypeError(`Argument "variable_join" must be type of string (non-nullable)! ([GitHub Action] Send To Pipedream)`);
-	};
-	if (advancedDetermine.isStringSingleLine(variableSystem.prefix, { allowWhitespace: false }) !== true) {
-		throw new TypeError(`Argument "variable_prefix" must be type of string (non-nullable)! ([GitHub Action] Send To Pipedream)`);
-	};
-	if (advancedDetermine.isStringSingleLine(variableSystem.suffix, { allowWhitespace: false }) !== true) {
-		throw new TypeError(`Argument "variable_suffix" must be type of string (non-nullable)! ([GitHub Action] Send To Pipedream)`);
-	};
-	if (advancedDetermine.isStringifyJSON(payload) !== false) {
-		githubAction.core.info(`Construct payload (stage MP). ([GitHub Action] Send To Pipedream)`);
-		payload = JSON.parse(payload);
-		githubAction.core.debug(`Payload (Stage MP): ${JSON.stringify(payload)} ([GitHub Action] Send To Pipedream)`);
-	} else if (advancedDetermine.isStringSingleLine(payload) === true && payload.search(/\.\.\//gu) === -1 && payload.search(/\.(jsonc?)|(ya?ml)$/gu) !== -1) {
-		payload = await require("./externalpayload.js")(payload);
-	} else {
-		throw new SyntaxError(`Argument "payload"'s value is not match the require pattern! ([GitHub Action] Send To Pipedream)`);
-	};
-	githubAction.core.info(`Import variable list. ([GitHub Action] Send To Pipedream)`);
-	variableSystem.list = {
-		external: githubAction.core.getInput(`variable_list_external`),
-		payload: githubAction.github.context.payload
-	};
-	githubAction.core.info(`Analysis external variable list. ([GitHub Action] Send To Pipedream)`);
-	switch (advancedDetermine.isString(variableSystem.list.external)) {
-		case null:
-			githubAction.core.info(`External variable list is empty. ([GitHub Action] Send To Pipedream)`);
-			variableSystem.list.external = {};
-			break;
-		case true:
-			if (advancedDetermine.isStringifyJSON(variableSystem.list.external) === false) {
-				throw new TypeError(`Argument "variable_list_external" must be type of object JSON! ([GitHub Action] Send To Pipedream)`);
-			};
-			variableSystem.list.external = JSON.parse(variableSystem.list.external);
-			break;
-		case false:
-		default:
-			throw new TypeError(`Argument "variable_list_external" must be type of object JSON! ([GitHub Action] Send To Pipedream)`);
-	};
-	githubAction.core.info(`Tokenize variable list. ([GitHub Action] Send To Pipedream)`);
-	variableSystem.list.external = jsonFlatten(
-		variableSystem.list.external,
-		{
-			delimiter: variableSystem.join
-		}
-	);
-	variableSystem.list.payload = jsonFlatten(
-		variableSystem.list.payload,
-		{
-			delimiter: variableSystem.join
-		}
-	);
-	githubAction.core.info(`Replace variable in the data. ([GitHub Action] Send To Pipedream)`);
-	function variableReplace(variableKey, variableValue) {
-		function indent(delta) {
-			if (advancedDetermine.isString(delta) === true) {
-				delta = delta.replace(variableKey, variableValue);
-			} else if (advancedDetermine.isArray(delta) === true) {
-				delta.forEach((element, index) => {
-					delta[index] = indent(element);
-				});
-			} else if (advancedDetermine.isJSON(delta) === true) {
-				Object.keys(delta).forEach((element) => {
-					delta[element] = indent(delta[element]);
-				});
-			};
-			return delta;
+	let payloadStringify = JSON.stringify(payload);
+	if (dryRun === true) {
+		ghactionCoreInformation(`Payload Content: ${payloadStringify}`);
+		let payloadFakeStringify = JSON.stringify({
+			body: "bar",
+			title: "foo",
+			userId: 1
+		});
+		ghactionCoreInformation(`Post network request to test service.`);
+		let response = await nodeFetch(
+			`https://jsonplaceholder.typicode.com/posts`,
+			{
+				body: payloadFakeStringify,
+				follow: 5,
+				headers: {
+					"Content-Type": "application/json",
+					"User-Agent": ghactionUserAgent
+				},
+				method: "POST",
+				redirect: "follow"
+			}
+		);
+		let responseText = await response.text();
+		if (response.ok === true) {
+			ghactionCoreInformation(`Status Code: ${response.status}\nResponse: ${responseText}`);
+		} else {
+			throw new Error(`Status Code: ${response.status}\nResponse: ${responseText}`);
 		};
-		payload = indent(payload);
-	};
-	Object.keys(variableSystem.list.payload).forEach((keyPayload) => {
-		variableReplace(
-			new RegExp(
-				regexpEscape(`${variableSystem.prefix}payload${variableSystem.join}${keyPayload}${variableSystem.suffix}`),
-				"gu"
-			),
-			variableSystem.list.payload[keyPayload]
-		);
-	});
-	Object.keys(variableSystem.list.external).forEach((keyExternal) => {
-		variableReplace(
-			new RegExp(
-				regexpEscape(`${variableSystem.prefix}external${variableSystem.join}${keyExternal}${variableSystem.suffix}`),
-				"gu"
-			),
-			variableSystem.list.external[keyExternal]
-		);
-	});
-	githubAction.core.debug(`Network Request Payload: ${payload} ([GitHub Action] Send To Pipedream)`);
-	githubAction.core.info(`Send network request to Pipedream. ([GitHub Action] Send To Pipedream)`);
-	let response = await pipedreamSDK.sendEvent(sdkKey, payload);
-	githubAction.core.info(`Receive network response from Pipedream. ([GitHub Action] Send To Pipedream)`);
-	if (response.status !== 200) {
-		githubAction.core.warning(`Receive status code ${response.status}! May cause error in the beyond. ([GitHub Action] Send To Pipedream)`);
-	};
-	let responseText = await response.text();
-	if (response.ok === true) {
-		githubAction.core.debug(`${response.status} ${responseText} ([GitHub Action] Send To Pipedream)`);
 	} else {
-		throw new Error(`${response.status} ${responseText} ([GitHub Action] Send To Pipedream)`);
+		ghactionCoreDebug(`Payload Content: ${payloadStringify}`);
+		ghactionCoreInformation(`Post network request to Pipedream.`);
+		let response;
+		if (method === "sdk") {
+			response = await pipedreamSDKRework(key, payload);
+		} else {
+			
+		};
+		let responseText = await response.text();
+		if (response.ok === true) {
+			ghactionCoreInformation(`Status Code: ${response.status}\nResponse: ${responseText}`);
+		} else {
+			throw new Error(`Status Code: ${response.status}\nResponse: ${responseText}`);
+		};
 	};
-})().catch((error) => {
-	githubAction.core.error(error);
+})().catch((reason) => {
+	ghactionCoreError(reason);
 	process.exit(1);
 });

@@ -1,36 +1,25 @@
-name: "Send To Pipedream"
+# $<Schema>$ https://docs.github.com/en/actions/creating-actions/metadata-syntax-for-github-actions
+name: "Trigger Pipedream Workflow"
 author: "hugoalh"
-description: "Send data to Pipedream via SDK."
+description: "Trigger Pipedream workflow via SDK or webhook."
 inputs:
   key:
-    description: "{string.secret} Pipedream SDK key."
+    description: "{string} SDK key or webhook URL."
     required: true
-  variable_join:
-    description: "{string} Variable join if the variable list has depth."
+  method:
+    description: "{string} Method to trigger."
     required: false
-    default: "_"
-  variable_list_external:
-    description: "{object.json} External variable list that will use in the data."
-    required: false
-  variable_prefix:
-    description: "{string} Variable prefix."
-    required: false
-    default: "%"
-  variable_suffix:
-    description: "{string} Variable suffix."
-    required: false
-    default: "%"
   payload:
-    description: "{(string|object.json)} Payload that need to send to Pipedream."
-    required: true
-  github_token:
-    description: "{string.secret} GitHub personal access token."
+    description: "{object} JSON payload."
     required: false
-    default: "${{github.token}}"
+    default: "{}"
+  dryrun:
+    description: "{boolean} Dry run."
+    required: false
+    default: "false"
 runs:
-  using: "node12"
-  pre: "setup.js"
-  main: "main.js"
+  using: "docker"
+  image: "Dockerfile"
 branding:
-  icon: "send"
+  icon: "zap"
   color: "green"

@@ -1,39 +1,42 @@
 {
-	"name": "githubaction.sendtopipedream",
-	"version": "1.0.0",
-	"description": "A GitHub action to send data to Pipedream via SDK.",
+	"name": "@hugoalh/trigger-pipedream-workflow-ghaction",
+	"version": "2.0.0-beta.1",
+	"description": "A GitHub Action to trigger Pipedream workflow via SDK or webhook.",
 	"keywords": [
 		"github-action",
 		"pipedream",
 		"sdk",
-		"send"
+		"trigger",
+		"webhook"
 	],
-	"homepage": "https://github.com/hugoalh/GitHubAction.SendToPipedream#readme",
+	"homepage": "https://github.com/hugoalh/trigger-pipedream-workflow-ghaction#readme",
 	"bugs": {
-		"url": "https://github.com/hugoalh/GitHubAction.SendToPipedream/issues"
+		"url": "https://github.com/hugoalh/trigger-pipedream-workflow-ghaction/issues"
 	},
 	"license": "MIT",
 	"author": "hugoalh",
-	"main": "main.js",
+	"type": "module",
+	"main": "./main.js",
+	"exports": {
+		"import": "./main.js"
+	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/hugoalh/GitHubAction.SendToPipedream.git"
+		"url": "git+https://github.com/hugoalh/trigger-pipedream-workflow-ghaction.git"
 	},
 	"dependencies": {
-		"@actions/core": "^1.2.6",
-		"@actions/github": "^4.0.0",
-		"@hugoalh/advanced-determine": "^5.0.1",
-		"@pipedreamhq/sdk": "^0.4.1",
-		"escape-string-regexp": "^4.0.0",
-		"flat": "^5.0.2"
+		"@actions/core": "^1.6.0",
+		"@hugoalh/advanced-determine": "^6.3.1",
+		"@hugoalh/more-method": "^0.5.1",
+		"axios": "^0.24.0",
+		"node-fetch": "^3.0.0"
 	},
-	"dynamicDependencies": {
-		"jsonc": "^2.0.0",
-		"yaml": "^1.10.0"
+	"devDependencies": {
+		"@pipedreamhq/sdk": "^0.4.1"
 	},
 	"engines": {
-		"node": ">= 12.13.0",
-		"npm": ">= 6.12.0"
+		"node": ">= 14.15.0",
+		"npm": ">= 6.14.8"
 	},
 	"private": true
 }

@@ -1,142 +1,145 @@
-# \[GitHub Action\] Send To Pipedream
+# Trigger Pipedream Workflow (GitHub Action Edition)
 
-<details>
-  <summary><a href="https://github.com/hugoalh/GitHubAction.SendToPipedream"><code>hugoalh/GitHubAction.SendToPipedream</code></a></summary>
-  <img align="center" alt="GitHub Language Count" src="https://img.shields.io/github/languages/count/hugoalh/GitHubAction.SendToPipedream?logo=github&logoColor=ffffff&style=flat-square" />
-  <img align="center" alt="GitHub Top Langauge" src="https://img.shields.io/github/languages/top/hugoalh/GitHubAction.SendToPipedream?logo=github&logoColor=ffffff&style=flat-square" />
-  <img align="center" alt="GitHub Repo Size" src="https://img.shields.io/github/repo-size/hugoalh/GitHubAction.SendToPipedream?logo=github&logoColor=ffffff&style=flat-square" />
-  <img align="center" alt="GitHub Code Size" src="https://img.shields.io/github/languages/code-size/hugoalh/GitHubAction.SendToPipedream?logo=github&logoColor=ffffff&style=flat-square" />
-  <img align="center" alt="GitHub Watcher" src="https://img.shields.io/github/watchers/hugoalh/GitHubAction.SendToPipedream?logo=github&logoColor=ffffff&style=flat-square" />
-  <img align="center" alt="GitHub Star" src="https://img.shields.io/github/stars/hugoalh/GitHubAction.SendToPipedream?logo=github&logoColor=ffffff&style=flat-square" />
-  <img align="center" alt="GitHub Fork" src="https://img.shields.io/github/forks/hugoalh/GitHubAction.SendToPipedream?logo=github&logoColor=ffffff&style=flat-square" />
-</details>
+[`TriggerPipedreamWorkflow.GitHubAction`](https://github.com/hugoalh/trigger-pipedream-workflow-ghaction)
+[![GitHub Contributors](https://img.shields.io/github/contributors/hugoalh/trigger-pipedream-workflow-ghaction?label=Contributors&logo=github&logoColor=ffffff&style=flat-square)](https://github.com/hugoalh/trigger-pipedream-workflow-ghaction/graphs/contributors)
+[![GitHub Issues](https://img.shields.io/github/issues-raw/hugoalh/trigger-pipedream-workflow-ghaction?label=Issues&logo=github&logoColor=ffffff&style=flat-square)](https://github.com/hugoalh/trigger-pipedream-workflow-ghaction/issues)
+[![GitHub Pull Requests](https://img.shields.io/github/issues-pr-raw/hugoalh/trigger-pipedream-workflow-ghaction?label=Pull%20Requests&logo=github&logoColor=ffffff&style=flat-square)](https://github.com/hugoalh/trigger-pipedream-workflow-ghaction/pulls)
+[![GitHub Discussions](https://img.shields.io/github/discussions/hugoalh/trigger-pipedream-workflow-ghaction?label=Discussions&logo=github&logoColor=ffffff&style=flat-square)](https://github.com/hugoalh/trigger-pipedream-workflow-ghaction/discussions)
+[![GitHub Stars](https://img.shields.io/github/stars/hugoalh/trigger-pipedream-workflow-ghaction?label=Stars&logo=github&logoColor=ffffff&style=flat-square)](https://github.com/hugoalh/trigger-pipedream-workflow-ghaction/stargazers)
+[![GitHub Forks](https://img.shields.io/github/forks/hugoalh/trigger-pipedream-workflow-ghaction?label=Forks&logo=github&logoColor=ffffff&style=flat-square)](https://github.com/hugoalh/trigger-pipedream-workflow-ghaction/network/members)
+![GitHub Languages](https://img.shields.io/github/languages/count/hugoalh/trigger-pipedream-workflow-ghaction?label=Languages&logo=github&logoColor=ffffff&style=flat-square)
+[![CodeFactor Grade](https://img.shields.io/codefactor/grade/github/hugoalh/trigger-pipedream-workflow-ghaction?label=Grade&logo=codefactor&logoColor=ffffff&style=flat-square)](https://www.codefactor.io/repository/github/hugoalh/trigger-pipedream-workflow-ghaction)
+[![LGTM Alerts](https://img.shields.io/lgtm/alerts/g/hugoalh/trigger-pipedream-workflow-ghaction?label=Alerts&logo=lgtm&logoColor=ffffff&style=flat-square)
+![LGTM Grade](https://img.shields.io/lgtm/grade/javascript/g/hugoalh/trigger-pipedream-workflow-ghaction?label=Grade&logo=lgtm&logoColor=ffffff&style=flat-square)](https://lgtm.com/projects/g/hugoalh/trigger-pipedream-workflow-ghaction)
+[![License](https://img.shields.io/static/v1?label=License&message=MIT&color=brightgreen&style=flat-square)](./LICENSE.md)
 
-A GitHub action to send data to Pipedream via SDK.
+| **Release** | **Latest** (![GitHub Latest Release Date](https://img.shields.io/github/release-date/hugoalh/trigger-pipedream-workflow-ghaction?label=%20&style=flat-square)) | **Pre** (![GitHub Latest Pre-Release Date](https://img.shields.io/github/release-date-pre/hugoalh/trigger-pipedream-workflow-ghaction?label=%20&style=flat-square)) |
+|:-:|:-:|:-:|
+| [**GitHub**](https://github.com/hugoalh/trigger-pipedream-workflow-ghaction/releases) ![GitHub Total Downloads](https://img.shields.io/github/downloads/hugoalh/trigger-pipedream-workflow-ghaction/total?label=%20&style=flat-square) | ![GitHub Latest Release Version](https://img.shields.io/github/release/hugoalh/trigger-pipedream-workflow-ghaction?sort=semver&label=%20&style=flat-square) | ![GitHub Latest Pre-Release Version](https://img.shields.io/github/release/hugoalh/trigger-pipedream-workflow-ghaction?include_prereleases&sort=semver&label=%20&style=flat-square) |
 
-<table>
-  <tr>
-    <td><a href="./LICENSE.md"><b>License</b></a></td>
-    <td>MIT</td>
-  </tr>
-  <tr>
-    <td><a href="https://github.com/hugoalh/GitHubAction.SendToPipedream/releases"><b>Release</b></a> <img align="center" src="https://img.shields.io/github/downloads/hugoalh/GitHubAction.SendToPipedream/total?label=%20&style=flat-square" /></td>
-    <td>
-      <b>Latest:</b> <img align="center" src="https://img.shields.io/github/release/hugoalh/GitHubAction.SendToPipedream?sort=semver&label=%20&style=flat-square" /> (<img align="center" src="https://img.shields.io/github/release-date/hugoalh/GitHubAction.SendToPipedream?label=%20&style=flat-square" />)<br />
-      <b>Pre:</b> <img align="center" src="https://img.shields.io/github/release/hugoalh/GitHubAction.SendToPipedream?include_prereleases&sort=semver&label=%20&style=flat-square" /> (<img align="center" src="https://img.shields.io/github/release-date-pre/hugoalh/GitHubAction.SendToPipedream?label=%20&style=flat-square" />)
-    </td>
-  </tr>
-  <tr>
-    <td><a href="https://github.com/hugoalh/GitHubAction.SendToPipedream/graphs/contributors"><b>Contributor</b></a> <img align="center" src="https://img.shields.io/github/contributors/hugoalh/GitHubAction.SendToPipedream?label=%20&style=flat-square" /></td>
-    <td><ul>
-        <li><a href="https://github.com/hugoalh">hugoalh</a></li>
-        <li><a href="https://github.com/hugoalh-studio">hugoalh Studio</a></li>
-    </ul></td>
-  </tr>
-  <tr>
-    <td><a href="https://github.com/hugoalh/GitHubAction.SendToPipedream/issues?q=is%3Aissue"><b>Issue</b></a></td>
-    <td><img align="center" src="https://img.shields.io/github/issues-raw/hugoalh/GitHubAction.SendToPipedream?label=%20&style=flat-square" /> : <img align="center" src="https://img.shields.io/github/issues-closed-raw/hugoalh/GitHubAction.SendToPipedream?label=%20&style=flat-square" /></td>
-  </tr>
-  <tr>
-    <td><a href="https://github.com/hugoalh/GitHubAction.SendToPipedream/pulls?q=is%3Apr"><b>Pull Request</b></a></td>
-    <td><img align="center" src="https://img.shields.io/github/issues-pr-raw/hugoalh/GitHubAction.SendToPipedream?label=%20&style=flat-square" /> : <img align="center" src="https://img.shields.io/github/issues-pr-closed-raw/hugoalh/GitHubAction.SendToPipedream?label=%20&style=flat-square" /></td>
-  </tr>
-  <tr>
-    <td><b>Code Quality</b></td>
-    <td>
-      <a href="https://www.codefactor.io/repository/github/hugoalh/githubaction.sendtopipedream"><img align="center" alt="CodeFactor Grade" src="https://img.shields.io/codefactor/grade/github/hugoalh/GitHubAction.SendToPipedream?logo=codefactor&logoColor=ffffff&style=flat-square" /></a>
-      <a href="https://lgtm.com/projects/g/hugoalh/GitHubAction.SendToPipedream/alerts"><img align="center" alt="LGTM Alert" src="https://img.shields.io/lgtm/alerts/g/hugoalh/GitHubAction.SendToPipedream?label=%20&logo=lgtm&logoColor=ffffff&style=flat-square" /></a>
-      <a href="https://lgtm.com/projects/g/hugoalh/GitHubAction.SendToPipedream/context:javascript"><img align="center" alt="LGTM Grade" src="https://img.shields.io/lgtm/grade/javascript/g/hugoalh/GitHubAction.SendToPipedream?logo=lgtm&logoColor=ffffff&style=flat-square" /></a>
-    </td>
-  </tr>
-</table>
+## 📝 Description
 
-## 📜 Description
+A GitHub Action to trigger Pipedream workflow via SDK or webhook.
 
-### 🌟 Feature
+*Previous named "\[GitHub Action\] Send To Pipedream".*
 
-- Simple setup.
-- Support variable to create dynamic/rich content.
+## 📚 Documentation
 
-## 🛠 Configuration
+> **⚠ Important:** This documentation is v2.0.0-beta.1 based. To view other tag's/version's documentation, visit the [tag/version list](https://github.com/hugoalh/trigger-pipedream-workflow-ghaction/tags) and select the correct tag/version.
 
-### 🏗 Environment
+### 🎯 Entrypoint / Target
 
-#### Operating System
+#### Default (`+default`)
 
-Any
+> **⚠ Important:** This entrypoint is currently based to <u>Docker (`+docker`)</u>, base can be changed between versions without announcement to ensure the stability.
 
-#### Software
+```yml
+jobs:
+  job_id:
+    runs-on: # Depend on the base requirement, recommended "ubuntu-________"
+    steps:
+      - uses: "hugoalh/trigger-pipedream-workflow-ghaction@<tag/version>"
+```
 
-- NodeJS (>= v12.13)
-- NPM (>= v6.12)
+#### Docker (`+docker`)
+
+```yml
+jobs:
+  job_id:
+    runs-on: "ubuntu-________"
+    steps:
+      - uses: "hugoalh/trigger-pipedream-workflow-ghaction/use-docker@<tag/version>"
+```
+
+##### Require Software
+
+- Docker
+
+#### NodeJS (`+nodejs`)
+
+> **⚠ Important:** This entrypoint maybe need extra steps to manually setup NodeJS version.
+
+```yml
+jobs:
+  job_id:
+    runs-on: *any*
+    steps:
+      - uses: "hugoalh/trigger-pipedream-workflow-ghaction/use-nodejs@<tag/version>"
+```
+
+##### Require Software
+
+- NodeJS (>= v14.15.0) + NPM (>= v6.14.8)
+
+#### PowerShell (`+powershell`)
+
+> **⚠ Important:** This entrypoint is suitable for advanced user.
+
+```yml
+jobs:
+  job_id:
+    runs-on: *any*
+    steps:
+      - uses: "hugoalh/trigger-pipedream-workflow-ghaction/use-powershell@<tag/version>"
+```
+
+##### Require Software
+
+- PowerShell (>= v7.1.0)
 
 ### 📥 Input
 
-| **Legend** | **Description** |
-|:---:|:----|
-| \[V\] | Support variable. |
-
-To use variable in the supported argument, follow the pattern:
-
-| **Category** | **Workflow File (Parse Via GitHub Machine/Runner)** | **Workflow File (Parse Via Action)** |
-|:---:|:---:|:---:|
-| External | *(N/A)* | `"<variable_prefix>external<variable_join><namespace><variable_suffix>"` |
-| GitHub Event Webhook Payload | `"${{github.event.<namespace>}}"` | `"<variable_prefix>payload<variable_join><namespace><variable_suffix>"` |
+> | **Legend** | **Description** |
+> |:-:|:--|
+> | 🔐 | Should be an encrypted secret. |
 
 #### `key`
 
-`<string.secret>` Pipedream SDK key; To obtain it, select workflow trigger with "SDK"; It is impossible to regenerate it unless create a new workflow.
+**🔐** `<string>` SDK key or webhook URL.
 
-#### `variable_join`
+#### `method`
 
-**\[Optional\]** `<string = "_">` Variable join if the variable list has depth.
+**\[Optional\]** `<string>` Method to trigger.
+- **Default:** Let this action automatically determine the best method.
+- **`"sdk"`:** Use SDK.
+- **`"webhook"`:** Use webhook.
 
-#### `variable_list_external`
-
-**\[Optional\]** `<object.json>` External variable list that will use in the data; Can import from other actions' output.
-
-#### `variable_prefix`
-
-**\[Optional\]** `<string = "%">` Variable prefix.
-
-#### `variable_suffix`
-
-**\[Optional\]** `<string = "%">` Variable suffix.
+When this input is not defined, and input `key` is a:
+- SDK key, will use `"sdk"`.
+- webhook, will use `"webhook"`.
 
 #### `payload`
 
-**\[V\]** `<(string|object.json)>` Payload that need to send to Pipedream.
-- **Externally:** A relative JSON, JSONC, YAML, or YML file path (end with `.json`, `.jsonc`, `.yaml`, or `.yml`) which in the same repository, file size must smaller than 1 MB (restricted by GitHub).
-- **Locally:** A stringify JSON paste in here.
+**\[Optional\]** `<object = {}>` JSON payload.
 
-#### `github_token`
+#### `dryrun`
 
-**\[Optional\]** `<string.secret = "${{github.token}}">` GitHub personal access token; Only use when need to fetch the file specify in the argument [`payload`](#payload).
+**\[Optional\]** `<boolean = false>` Dry run; For debug use.
 
 ### 📤 Output
 
-*(N/A)*
+*N/A*
 
 ### Example
 
 ```yml
 jobs:
-  send-to-pipedream:
-    name: "Send To Pipedream"
+  job_id:
+    name: "Trigger Pipedream Workflow"
     runs-on: "ubuntu-latest"
     steps:
-      - uses: "hugoalh/GitHubAction.SendToPipedream@v1.0.0"
+      - uses: "hugoalh/trigger-pipedream-workflow-ghaction@v2.0.0"
         with:
-          key: "${{secrets.PIPEDREAM_SDK_KEY}}"
-          variable_join: "."
-          # variable_list_external:
-          variable_prefix: "%"
-          variable_suffix: "%"
-          payload: "{\"message\": \"Hello, world!\"}"
+          key: "${{secrets.PIPEDREAM_KEY}}"
+          payload: |
+            {
+              "message": "Hello, world!"
+            }
 ```
 
-### 📚 Guide
+### Guide
 
-- [GitHub Actions: Enabling debug logging](https://docs.github.com/en/free-pro-team@latest/actions/managing-workflow-runs/enabling-debug-logging)
-- [GitHub Actions: Encrypted secrets](https://docs.github.com/en/free-pro-team@latest/actions/reference/encrypted-secrets)
-- [GitHub: Webhook events and payloads](https://docs.github.com/en/free-pro-team@latest/developers/webhooks-and-events/webhook-events-and-payloads)
+#### GitHub Actions
+
+- [Enabling debug logging](https://docs.github.com/en/actions/managing-workflow-runs/enabling-debug-logging)
+- [Encrypted secrets](https://docs.github.com/en/actions/reference/encrypted-secrets)

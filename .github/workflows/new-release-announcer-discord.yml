@@ -1,11 +1,12 @@
+# $<Schema>$ https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
 name: "New Release Announcer - Discord"
 on:
   release:
     types:
       - "published"
 jobs:
-  send-to-discord:
-    name: "Send To Discord"
+  new-release-announcer-discord:
+    name: "New Release Announcer - Discord"
     runs-on: "ubuntu-latest"
     steps:
       - uses: "hugoalh/GitHubAction.SendToDiscord@v3.1.1"
