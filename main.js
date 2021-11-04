@@ -1,9 +1,10 @@
-import { debug as ghactionCoreDebug, error as ghactionCoreError, getInput as ghactionCoreGetInput, info as ghactionCoreInformation, warning as ghactionCoreWarning } from "@actions/core";
+import { debug as ghactionCoreDebug, error as ghactionCoreError, getInput as ghactionCoreGetInput, info as ghactionCoreInformation, setSecret as ghactionCoreSetSecret } from "@actions/core";
 import { isJSON as adIsJSON, isString as adIsString } from "@hugoalh/advanced-determine";
 import { stringParse as mmStringParse } from "@hugoalh/more-method";
 import nodeFetch from "node-fetch";
-import axios from "axios";
 const ghactionUserAgent = "TriggerPipedreamWorkflow.GitHubAction/2.0.0";
+let rePipedreamSDKURL = /^https:\/\/sdk\.m\.pipedream\.net\/pipelines\/(?<key>[-0-9_a-z]+)\/events$/giu;
+let rePipedreamWebhookURL = /^https:\/\/(?<key>[-0-9_a-z]+)\.m\.pipedream\.net$/giu;
 /**
  * @private
  * @function $importInput
@@ -16,12 +17,13 @@ function $importInput(key) {
 };
 /**
  * @private
- * @function pipedreamSDKRework
+ * @async @function pipedreamSDKRework
  * @param {string} key
- * @param {object} payload
- * @returns {object}
+ * @param {object} [payload]
+ * @returns {Promise<any>}
  */
-function pipedreamSDKRework(key, payload = {}) {
+async function pipedreamSDKRework(key, payload = {}) {
+	const axios = (await import("axios")).default;
 	return axios.request({
 		data: JSON.stringify({
 			"raw_event": payload
@@ -45,21 +47,28 @@ function pipedreamSDKRework(key, payload = {}) {
 	if (adIsString(key, { singleLine: true }) !== true) {
 		throw new TypeError(`Input \`key\` must be type of string (non-nullable)!`);
 	};
-	let method = $importInput("method");
+	let method = $importInput("method").toLowerCase();
 	if (adIsString(method, { singleLine: true }) === false) {
 		throw new TypeError(`Input \`method\` must be type of string!`);
 	};
-
 	if (
-		key.search(/^https:\/\/sdk\.m\.pipedream\.net\/pipelines\/[\da-z_-]+\/events$/giu) === 0 ||
-		key.search(/^[-0-9_a-z]+$/giu) === 0
+		key.search(/^[\da-z_-]+$/giu) === 0 ||
+		key.search(rePipedreamSDKURL) === 0
 	) {
-		if (adIsString(method) !== true) {
+		key = key.replace(rePipedreamSDKURL, "$<key>");
+		if (method.length === 0) {
 			method = "sdk";
 		};
-		key = key.replace(/^https:\/\/sdk\.m\.pipedream\.net\/pipelines\/(?<key>[-0-9_a-z]+)\/events$/giu, "$<key>");
-	} else if (key) { } else { };// TODO
-
+	} else if (key.search(rePipedreamWebhookURL) === 0) {
+		key = key.replace(rePipedreamWebhookURL, "$<key>");
+		if (method.length === 0) {
+			method = "webhook";
+		};
+	};
+	ghactionCoreSetSecret(key);
+	if (method !== "sdk" && method !== "webhook") {
+		throw new SyntaxError(`Input \`method\`'s value is not in the list!`);
+	};
 	let payload = mmStringParse($importInput("payload"));
 	if (adIsJSON(payload) === false) {
 		throw new TypeError(`Input \`payload\` must be type of JSON!`);
@@ -94,18 +103,35 @@ function pipedreamSDKRework(key, payload = {}) {
 		};
 	} else {
 		ghactionCoreDebug(`Payload Content: ${payloadStringify}`);
-		ghactionCoreInformation(`Post network request to Pipedream.`);
-		let response;
 		if (method === "sdk") {
-			response = await pipedreamSDKRework(key, payload);
+			ghactionCoreInformation(`Post network request to Pipedream SDK.`);
+			let response = await pipedreamSDKRework(key, payload);
+			if (response.statusText === "OK") {
+				ghactionCoreInformation(`Status Code: ${response.status}\nResponse: ${response.data}`);
+			} else {
+				throw new Error(`Status Code: ${response.status}\nResponse: ${response.data}`);
+			};
 		} else {
-			
-		};
-		let responseText = await response.text();
-		if (response.ok === true) {
-			ghactionCoreInformation(`Status Code: ${response.status}\nResponse: ${responseText}`);
-		} else {
-			throw new Error(`Status Code: ${response.status}\nResponse: ${responseText}`);
+			ghactionCoreInformation(`Post network request to Pipedream webhook.`);
+			let response = await nodeFetch(
+				`https://${key}.m.pipedream.net`,
+				{
+					body: payloadStringify,
+					follow: 5,
+					headers: {
+						"Content-Type": "application/json",
+						"User-Agent": ghactionUserAgent
+					},
+					method: "POST",
+					redirect: "follow"
+				}
+			);
+			let responseText = await response.text();
+			if (response.ok === true) {
+				ghactionCoreInformation(`Status Code: ${response.status}\nResponse: ${responseText}`);
+			} else {
+				throw new Error(`Status Code: ${response.status}\nResponse: ${responseText}`);
+			};
 		};
 	};
 })().catch((reason) => {
