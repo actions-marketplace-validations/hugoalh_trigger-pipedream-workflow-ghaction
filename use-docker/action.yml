@@ -1,0 +1,25 @@
+# $<Schema>$ https://docs.github.com/en/actions/creating-actions/metadata-syntax-for-github-actions
+name: "Trigger Pipedream Workflow"
+author: "hugoalh"
+description: "Trigger Pipedream workflow via SDK or webhook."
+inputs:
+  key:
+    description: "{string} SDK key or webhook URL."
+    required: true
+  method:
+    description: "{string} Method to trigger."
+    required: false
+  payload:
+    description: "{object} JSON payload."
+    required: false
+    default: "{}"
+  dryrun:
+    description: "{boolean} Dry run."
+    required: false
+    default: "false"
+runs:
+  using: "docker"
+  image: "../Dockerfile"
+branding:
+  icon: "zap"
+  color: "green"

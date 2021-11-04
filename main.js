@@ -1,7 +1,6 @@
 import { debug as ghactionCoreDebug, error as ghactionCoreError, getInput as ghactionCoreGetInput, info as ghactionCoreInformation, setSecret as ghactionCoreSetSecret } from "@actions/core";
 import { isJSON as adIsJSON, isString as adIsString } from "@hugoalh/advanced-determine";
 import { stringParse as mmStringParse } from "@hugoalh/more-method";
-import nodeFetch from "node-fetch";
 const ghactionUserAgent = "TriggerPipedreamWorkflow.GitHubAction/2.0.0";
 let rePipedreamSDKURL = /^https:\/\/sdk\.m\.pipedream\.net\/pipelines\/(?<key>[-0-9_a-z]+)\/events$/giu;
 let rePipedreamWebhookURL = /^https:\/\/(?<key>[-0-9_a-z]+)\.m\.pipedream\.net$/giu;
@@ -14,28 +13,6 @@ let rePipedreamWebhookURL = /^https:\/\/(?<key>[-0-9_a-z]+)\.m\.pipedream\.net$/
 function $importInput(key) {
 	ghactionCoreDebug(`Import input \`${key}\`.`);
 	return ghactionCoreGetInput(key);
-};
-/**
- * @private
- * @async @function pipedreamSDKRework
- * @param {string} key
- * @param {object} [payload]
- * @returns {Promise<any>}
- */
-async function pipedreamSDKRework(key, payload = {}) {
-	const axios = (await import("axios")).default;
-	return axios.request({
-		data: JSON.stringify({
-			"raw_event": payload
-		}),
-		headers: {
-			"content-type": "application/json",
-			"user-agent": "pdsdk:javascript/1",
-			"x-pd-sdk-version": "0.3.2"
-		},
-		method: "post",
-		url: `https://sdk.m.pipedream.net/pipelines/${key}/events`
-	});
 };
 (async () => {
 	ghactionCoreInformation(`Import inputs.`);
@@ -82,6 +59,7 @@ async function pipedreamSDKRework(key, payload = {}) {
 			userId: 1
 		});
 		ghactionCoreInformation(`Post network request to test service.`);
+		const nodeFetch = (await import("node-fetch")).default;
 		let response = await nodeFetch(
 			`https://jsonplaceholder.typicode.com/posts`,
 			{
@@ -105,7 +83,19 @@ async function pipedreamSDKRework(key, payload = {}) {
 		ghactionCoreDebug(`Payload Content: ${payloadStringify}`);
 		if (method === "sdk") {
 			ghactionCoreInformation(`Post network request to Pipedream SDK.`);
-			let response = await pipedreamSDKRework(key, payload);
+			const axios = (await import("axios")).default;
+			let response = await axios.request({
+				data: JSON.stringify({
+					"raw_event": payload
+				}),
+				headers: {
+					"content-type": "application/json",
+					"user-agent": "pdsdk:javascript/1",
+					"x-pd-sdk-version": "0.3.2"
+				},
+				method: "post",
+				url: `https://sdk.m.pipedream.net/pipelines/${key}/events`
+			});
 			if (response.statusText === "OK") {
 				ghactionCoreInformation(`Status Code: ${response.status}\nResponse: ${response.data}`);
 			} else {
@@ -113,6 +103,7 @@ async function pipedreamSDKRework(key, payload = {}) {
 			};
 		} else {
 			ghactionCoreInformation(`Post network request to Pipedream webhook.`);
+			const nodeFetch = (await import("node-fetch")).default;
 			let response = await nodeFetch(
 				`https://${key}.m.pipedream.net`,
 				{
