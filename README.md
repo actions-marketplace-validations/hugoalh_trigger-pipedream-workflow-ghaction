@@ -102,11 +102,13 @@ jobs:
 #### `method`
 
 **\[Optional\]** `<string>` Method to trigger.
+
 - **Default:** Let this action automatically determine the best method.
 - **`"sdk"`:** Use SDK.
 - **`"webhook"`:** Use webhook.
 
 When this input is not defined, and input `key` is a:
+
 - SDK key, will use `"sdk"`.
 - webhook, will use `"webhook"`.
 
