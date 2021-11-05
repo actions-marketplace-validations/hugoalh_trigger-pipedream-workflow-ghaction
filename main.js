@@ -41,6 +41,8 @@ function $importInput(key) {
 		if (method.length === 0) {
 			method = "webhook";
 		};
+	} else {
+		throw new TypeError(`Input \`key\` must be type of string (non-nullable)!`);
 	};
 	ghactionCoreSetSecret(key);
 	if (method !== "sdk" && method !== "webhook") {

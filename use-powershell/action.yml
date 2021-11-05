@@ -17,7 +17,7 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - run: "${{github.action_path}}/../main.ps1 -dryrun '${{inputs.dryrun}}' -key '${{inputs.key}}' -payload '${{inputs.payload}}'"
+    - run: "${{github.action_path}}/../main.ps1 -dryRun '${{inputs.dryrun}}' -key '${{inputs.key}}' -payload '${{inputs.payload}}'"
       shell: "pwsh"
 branding:
   icon: "zap"
