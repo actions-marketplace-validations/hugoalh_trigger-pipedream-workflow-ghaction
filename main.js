@@ -1,9 +1,9 @@
-import { debug as ghactionCoreDebug, error as ghactionCoreError, getInput as ghactionCoreGetInput, info as ghactionCoreInformation, setSecret as ghactionCoreSetSecret } from "@actions/core";
+import { debug as ghactionDebug, error as ghactionError, getInput as ghactionGetInput, info as ghactionInformation, setSecret as ghactionSetSecret } from "@actions/core";
 import { isJSON as adIsJSON, isString as adIsString } from "@hugoalh/advanced-determine";
 import { stringParse as mmStringParse } from "@hugoalh/more-method";
 const ghactionUserAgent = "TriggerPipedreamWorkflow.GitHubAction/2.0.0";
-let rePipedreamSDKURL = /^https:\/\/sdk\.m\.pipedream\.net\/pipelines\/(?<key>[\da-z_-]+)\/events$/giu;
-let rePipedreamWebhookURL = /^https:\/\/(?<key>[\da-z_-]+)\.m\.pipedream\.net$/giu;
+const rePipedreamSDKURL = /^https:\/\/sdk\.m\.pipedream\.net\/pipelines\/(?<key>[\da-z_-]+)\/events$/gu;
+const rePipedreamWebhookURL = /^https:\/\/(?<key>[\da-z_-]+)\.m\.pipedream\.net$/gu;
 /**
  * @private
  * @function $importInput
@@ -11,11 +11,11 @@ let rePipedreamWebhookURL = /^https:\/\/(?<key>[\da-z_-]+)\.m\.pipedream\.net$/g
  * @returns {string}
  */
 function $importInput(key) {
-	ghactionCoreDebug(`Import input \`${key}\`.`);
-	return ghactionCoreGetInput(key);
+	ghactionDebug(`Import input \`${key}\`.`);
+	return ghactionGetInput(key);
 };
 (async () => {
-	ghactionCoreInformation(`Import inputs.`);
+	ghactionInformation(`Import inputs.`);
 	let dryRun = mmStringParse($importInput("dryrun"));
 	if (typeof dryRun !== "boolean") {
 		throw new TypeError(`Input \`dryrun\` must be type of boolean!`);
@@ -44,7 +44,7 @@ function $importInput(key) {
 	} else {
 		throw new TypeError(`Input \`key\` must be type of string (non-nullable)!`);
 	};
-	ghactionCoreSetSecret(key);
+	ghactionSetSecret(key);
 	if (method !== "sdk" && method !== "webhook") {
 		throw new SyntaxError(`Input \`method\`'s value is not in the list!`);
 	};
@@ -54,13 +54,13 @@ function $importInput(key) {
 	};
 	let payloadStringify = JSON.stringify(payload);
 	if (dryRun === true) {
-		ghactionCoreInformation(`Payload Content: ${payloadStringify}`);
+		ghactionInformation(`Payload Content: ${payloadStringify}`);
 		let payloadFakeStringify = JSON.stringify({
 			body: "bar",
 			title: "foo",
 			userId: 1
 		});
-		ghactionCoreInformation(`Post network request to test service.`);
+		ghactionInformation(`Post network request to test service.`);
 		const nodeFetch = (await import("node-fetch")).default;
 		let response = await nodeFetch(
 			`https://jsonplaceholder.typicode.com/posts`,
@@ -77,14 +77,14 @@ function $importInput(key) {
 		);
 		let responseText = await response.text();
 		if (response.ok === true) {
-			ghactionCoreInformation(`Status Code: ${response.status}\nResponse: ${responseText}`);
+			ghactionInformation(`Status Code: ${response.status}\nResponse: ${responseText}`);
 		} else {
 			throw new Error(`Status Code: ${response.status}\nResponse: ${responseText}`);
 		};
 	} else {
-		ghactionCoreDebug(`Payload Content: ${payloadStringify}`);
+		ghactionDebug(`Payload Content: ${payloadStringify}`);
 		if (method === "sdk") {
-			ghactionCoreInformation(`Post network request to Pipedream SDK.`);
+			ghactionInformation(`Post network request to Pipedream SDK.`);
 			const axios = (await import("axios")).default;
 			let response = await axios.request({
 				data: JSON.stringify({
@@ -99,12 +99,12 @@ function $importInput(key) {
 				url: `https://sdk.m.pipedream.net/pipelines/${key}/events`
 			});
 			if (response.statusText === "OK") {
-				ghactionCoreInformation(`Status Code: ${response.status}\nResponse: ${response.data}`);
+				ghactionInformation(`Status Code: ${response.status}\nResponse: ${response.data}`);
 			} else {
 				throw new Error(`Status Code: ${response.status}\nResponse: ${response.data}`);
 			};
 		} else {
-			ghactionCoreInformation(`Post network request to Pipedream webhook.`);
+			ghactionInformation(`Post network request to Pipedream webhook.`);
 			const nodeFetch = (await import("node-fetch")).default;
 			let response = await nodeFetch(
 				`https://${key}.m.pipedream.net`,
@@ -121,13 +121,13 @@ function $importInput(key) {
 			);
 			let responseText = await response.text();
 			if (response.ok === true) {
-				ghactionCoreInformation(`Status Code: ${response.status}\nResponse: ${responseText}`);
+				ghactionInformation(`Status Code: ${response.status}\nResponse: ${responseText}`);
 			} else {
 				throw new Error(`Status Code: ${response.status}\nResponse: ${responseText}`);
 			};
 		};
 	};
 })().catch((reason) => {
-	ghactionCoreError(reason);
+	ghactionError(reason);
 	process.exit(1);
 });
