@@ -25,7 +25,7 @@ A GitHub Action to trigger Pipedream workflow via SDK or webhook.
 
 ## 📚 Documentation
 
-> **⚠ Important:** This documentation is v2.0.0-beta.1 based. To view other tag's/version's documentation, visit the [tag/version list](https://github.com/hugoalh/trigger-pipedream-workflow-ghaction/tags) and select the correct tag/version.
+> **⚠ Important:** This documentation is v2.0.0-beta.2 based. To view other tag's/version's documentation, visit the [tag/version list](https://github.com/hugoalh/trigger-pipedream-workflow-ghaction/tags) and select the correct tag/version.
 
 ### 🎯 Entrypoint / Target
 
@@ -101,7 +101,17 @@ jobs:
 
 #### `key`
 
-**🔐** `<string>` SDK key or webhook URL.
+**🔐** `<string>` Key; SDK key, SDK URL, webhook key, and webhook URL forms are acceptable.
+
+```
+https://sdk.m.pipedream.net/pipelines/pipedream-workflow-key/events
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  SDK URL
+                                      ^^^^^^^^^^^^^^^^^^^^^^         SDK Key
+
+https://pipedream-workflow-key.m.pipedream.net
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  Webhook URL
+        ^^^^^^^^^^^^^^^^^^^^^^                  Webhook Key
+```
 
 #### `method`
 
@@ -113,8 +123,8 @@ jobs:
 
 When this input is not defined, and input `key` is a:
 
-- SDK key, will use `"sdk"`.
-- webhook, will use `"webhook"`.
+- SDK key, SDK URL, or webhook key, will use `"sdk"`.
+- webhook URL, will use `"webhook"`.
 
 #### `payload`
 
@@ -138,7 +148,7 @@ jobs:
     steps:
       - uses: "hugoalh/trigger-pipedream-workflow-ghaction@v2.0.0"
         with:
-          key: "${{secrets.PIPEDREAM_KEY}}"
+          key: "${{secrets.PIPEDREAM_WORKFLOW_KEY}}"
           payload: |
             {
               "message": "Hello, world!"

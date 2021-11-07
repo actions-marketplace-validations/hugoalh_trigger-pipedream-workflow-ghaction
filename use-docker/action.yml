@@ -4,7 +4,7 @@ author: "hugoalh"
 description: "Trigger Pipedream workflow via SDK or webhook."
 inputs:
   key:
-    description: "{string} SDK key or webhook URL."
+    description: "{string} Key."
     required: true
   method:
     description: "{string} Method to trigger."
