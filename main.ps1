@@ -14,9 +14,19 @@ if ($dryRun -eq $true) {
 	Write-Output -InputObject "Payload Content: $payloadStringify"
 	$payloadFakeStringify = (ConvertFrom-Json -InputObject '{"body": "bar", "title": "foo", "userId": 1}' -Depth 100 | ConvertTo-Json -Depth 100 -Compress)
 	Write-Output -InputObject "Post network request to test service."
-	Invoke-WebRequest -UseBasicParsing -Uri "https://jsonplaceholder.typicode.com/posts" -UserAgent $ghactionUserAgent -MaximumRedirection 5 -Method Post -Body $payloadFakeStringify -ContentType "application/json; charset=utf-8"
+	$response = Invoke-WebRequest -UseBasicParsing -Uri "https://jsonplaceholder.typicode.com/posts" -UserAgent $ghactionUserAgent -MaximumRedirection 5 -Method Post -Body $payloadFakeStringify -ContentType "application/json; charset=utf-8"
+	$response.PSObject.Properties | ForEach-Object {
+		Write-Output -InputObject "::group::$($_.Name)"
+		Write-Output -InputObject "$($_.Value | ConvertTo-Json -Depth 100 -Compress)"
+		Write-Output -InputObject "::endgroup::"
+	}
 } else {
 	Write-Output -InputObject "::debug::Payload Content: $payloadStringify"
 	Write-Output -InputObject "Post network request to Pipedream webhook."
-	Invoke-WebRequest -UseBasicParsing -Uri "https://$key.m.pipedream.net" -UserAgent $ghactionUserAgent -MaximumRedirection 5 -Method Post -Body $payloadStringify -ContentType "application/json; charset=utf-8"
+	$response = Invoke-WebRequest -UseBasicParsing -Uri "https://$key.m.pipedream.net" -UserAgent $ghactionUserAgent -MaximumRedirection 5 -Method Post -Body $payloadStringify -ContentType "application/json; charset=utf-8"
+	$response.PSObject.Properties | ForEach-Object {
+		Write-Output -InputObject "::group::$($_.Name)"
+		Write-Output -InputObject "::debug::$($_.Value | ConvertTo-Json -Depth 100 -Compress)"
+		Write-Output -InputObject "::endgroup::"
+	}
 }
