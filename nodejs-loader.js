@@ -30,8 +30,8 @@ function $execute(command) {
 	});
 };
 (async () => {
-	await $execute("npm install --production");
-	await $execute("node --no-warnings main.js");
+	await $execute("npm ci");
+	await $execute("node main.js");
 })().catch((reason) => {
 	console.error(reason);
 	process.exit(1);
