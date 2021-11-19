@@ -1,30 +1,30 @@
 param (
-	[Parameter()][boolean]$dryRun,
-	[Parameter(Mandatory = $true, Position = 1)][ValidatePattern("^([\da-zA-Z_-]+|https:\/\/[\da-zA-Z_-]+\.m\.pipedream\.net)$")][string]$key,
-	[Parameter(Mandatory = $true, Position = 2, ValueFromPipeline = $true)][ValidateNotNullOrEmpty()][string]$payload
+	[Parameter()][boolean]$DryRun,
+	[Parameter(Mandatory = $true, Position = 1)][ValidatePattern("^([\da-zA-Z_-]+|https:\/\/[\da-zA-Z_-]+\.m\.pipedream\.net)$")][string]$Key,
+	[Parameter(Mandatory = $true, Position = 2, ValueFromPipeline = $true)][ValidateNotNullOrEmpty()][string]$Payload
 )
-$ghactionUserAgent = "TriggerPipedreamWorkflow.GitHubAction/2.0.0"
-$rePipedreamWebhookURL = "^https:\/\/(?<key>[\da-zA-Z_-]+)\.m\.pipedream\.net$"
-if ($key -cmatch $rePipedreamWebhookURL) {
-	$key -creplace $rePipedreamWebhookURL,'${key}'
+$GHActionUserAgent = "TriggerPipedreamWorkflow.GitHubAction/2.0.1"
+$REPipedreamWebhookURL = "^https:\/\/(?<Key>[\da-zA-Z_-]+)\.m\.pipedream\.net$"
+if ($Key -cmatch $REPipedreamWebhookURL) {
+	$Key -creplace $REPipedreamWebhookURL,'${Key}'
 }
-Write-Output -InputObject "::add-mask::$key"
-$payloadStringify = (ConvertFrom-Json -InputObject $payload -Depth 100 | ConvertTo-Json -Depth 100 -Compress)
-if ($dryRun -eq $true) {
-	Write-Output -InputObject "Payload Content: $payloadStringify"
-	$payloadFakeStringify = (ConvertFrom-Json -InputObject '{"body": "bar", "title": "foo", "userId": 1}' -Depth 100 | ConvertTo-Json -Depth 100 -Compress)
+Write-Output -InputObject "::add-mask::$Key"
+$PayloadStringify = (ConvertFrom-Json -InputObject $Payload -Depth 100 | ConvertTo-Json -Depth 100 -Compress)
+if ($DryRun -eq $true) {
+	Write-Output -InputObject "Payload Content: $PayloadStringify"
+	$PayloadFakeStringify = (ConvertFrom-Json -InputObject '{"body": "bar", "title": "foo", "userId": 1}' -Depth 100 | ConvertTo-Json -Depth 100 -Compress)
 	Write-Output -InputObject "Post network request to test service."
-	$response = Invoke-WebRequest -UseBasicParsing -Uri "https://jsonplaceholder.typicode.com/posts" -UserAgent $ghactionUserAgent -MaximumRedirection 5 -Method Post -Body $payloadFakeStringify -ContentType "application/json; charset=utf-8"
-	$response.PSObject.Properties | ForEach-Object {
+	$Response = Invoke-WebRequest -UseBasicParsing -Uri "https://jsonplaceholder.typicode.com/posts" -UserAgent $GHActionUserAgent -MaximumRedirection 5 -Method Post -Body $PayloadFakeStringify -ContentType "application/json; charset=utf-8"
+	$Response.PSObject.Properties | ForEach-Object {
 		Write-Output -InputObject "::group::$($_.Name)"
 		Write-Output -InputObject "$($_.Value | ConvertTo-Json -Depth 100 -Compress)"
 		Write-Output -InputObject "::endgroup::"
 	}
 } else {
-	Write-Output -InputObject "::debug::Payload Content: $payloadStringify"
+	Write-Output -InputObject "::debug::Payload Content: $PayloadStringify"
 	Write-Output -InputObject "Post network request to Pipedream webhook."
-	$response = Invoke-WebRequest -UseBasicParsing -Uri "https://$key.m.pipedream.net" -UserAgent $ghactionUserAgent -MaximumRedirection 5 -Method Post -Body $payloadStringify -ContentType "application/json; charset=utf-8"
-	$response.PSObject.Properties | ForEach-Object {
+	$Response = Invoke-WebRequest -UseBasicParsing -Uri "https://$Key.m.pipedream.net" -UserAgent $GHActionUserAgent -MaximumRedirection 5 -Method Post -Body $PayloadStringify -ContentType "application/json; charset=utf-8"
+	$Response.PSObject.Properties | ForEach-Object {
 		Write-Output -InputObject "::group::$($_.Name)"
 		Write-Output -InputObject "::debug::$($_.Value | ConvertTo-Json -Depth 100 -Compress)"
 		Write-Output -InputObject "::endgroup::"
