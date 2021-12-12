@@ -3,7 +3,7 @@ param (
 	[Parameter(Mandatory = $true, Position = 1)][ValidatePattern("^([\da-zA-Z_-]+|https:\/\/[\da-zA-Z_-]+\.m\.pipedream\.net)$")][string]$Key,
 	[Parameter(Mandatory = $true, Position = 2, ValueFromPipeline = $true)][ValidateNotNullOrEmpty()][string]$Payload
 )
-$GHActionUserAgent = "TriggerPipedreamWorkflow.GitHubAction/2.0.1"
+$GHActionUserAgent = "TriggerPipedreamWorkflow.GitHubAction/2.1.0"
 $REPipedreamWebhookURL = "^https:\/\/(?<Key>[\da-zA-Z_-]+)\.m\.pipedream\.net$"
 if ($Key -cmatch $REPipedreamWebhookURL) {
 	$Key -creplace $REPipedreamWebhookURL,'${Key}'

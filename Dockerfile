@@ -1,5 +1,6 @@
 FROM node:lts-fermium
-COPY package*.json /
+COPY main.js package-lock.json package.json /opt/hugoalh/trigger-pipedream-workflow-ghaction/
+WORKDIR /opt/hugoalh/trigger-pipedream-workflow-ghaction/
 RUN ["npm", "ci"]
-COPY main.js /
-CMD ["node", "/main.js"]
+WORKDIR /
+CMD ["node", "/opt/hugoalh/trigger-pipedream-workflow-ghaction/main.js"]

@@ -1,4 +1,4 @@
-# Trigger Pipedream Workflow (GitHub Action Edition)
+# Trigger Pipedream Workflow (GitHub Action)
 
 [`TriggerPipedreamWorkflow.GitHubAction`](https://github.com/hugoalh/trigger-pipedream-workflow-ghaction)
 [![GitHub Contributors](https://img.shields.io/github/contributors/hugoalh/trigger-pipedream-workflow-ghaction?label=Contributors&logo=github&logoColor=ffffff&style=flat-square)](https://github.com/hugoalh/trigger-pipedream-workflow-ghaction/graphs/contributors)
@@ -25,7 +25,7 @@ A GitHub Action to trigger Pipedream workflow via SDK or webhook.
 
 ## 📚 Documentation
 
-> **⚠ Important:** This documentation is v2.0.0-beta.2 based. To view other tag's/version's documentation, visit the [tag/version list](https://github.com/hugoalh/trigger-pipedream-workflow-ghaction/tags) and select the correct tag/version.
+> **⚠ Important:** This documentation is v2.1.0 based; To view other tag's/version's documentation, please visit the [tag/version list](https://github.com/hugoalh/trigger-pipedream-workflow-ghaction/tags) and select the correct tag/version.
 
 ### 🎯 Entrypoint / Target
 
@@ -91,7 +91,7 @@ jobs:
 
 ##### Require Software
 
-- PowerShell (>= v7.1.0)
+- PowerShell (>= v7.2.0)
 
 ### 📥 Input
 
