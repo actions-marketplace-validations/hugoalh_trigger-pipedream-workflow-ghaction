@@ -21,13 +21,10 @@ function $importInput(key) {
 		throw new TypeError(`Input \`dryrun\` must be type of boolean!`);
 	};
 	let key = $importInput("key");
-	if (adIsString(key, { singleLine: true }) !== true) {
-		throw new TypeError(`Input \`key\` must be type of string (non-nullable)!`);
+	if (!adIsString(key, { empty: false, singleLine: true })) {
+		throw new TypeError(`Input \`key\` must be type of string (non-empty)!`);
 	};
 	let method = $importInput("method").toLowerCase();
-	if (adIsString(method, { singleLine: true }) === false) {
-		throw new TypeError(`Input \`method\` must be type of string!`);
-	};
 	if (
 		key.search(/^[\da-z_-]+$/giu) === 0 ||
 		key.search(rePipedreamSDKURL) === 0
@@ -42,18 +39,18 @@ function $importInput(key) {
 			method = "webhook";
 		};
 	} else {
-		throw new TypeError(`Input \`key\` must be type of string (non-nullable)!`);
+		throw new TypeError(`Input \`key\` must be type of string (non-empty)!`);
 	};
 	ghactionSetSecret(key);
 	if (method !== "sdk" && method !== "webhook") {
 		throw new SyntaxError(`Input \`method\`'s value is not in the list!`);
 	};
 	let payload = mmStringParse($importInput("payload"));
-	if (adIsJSON(payload) === false) {
+	if (!adIsJSON(payload)) {
 		throw new TypeError(`Input \`payload\` must be type of JSON!`);
 	};
 	let payloadStringify = JSON.stringify(payload);
-	if (dryRun === true) {
+	if (dryRun) {
 		ghactionInformation(`Payload Content: ${payloadStringify}`);
 		let payloadFakeStringify = JSON.stringify({
 			body: "bar",
@@ -76,7 +73,7 @@ function $importInput(key) {
 			}
 		);
 		let responseText = await response.text();
-		if (response.ok === true) {
+		if (response.ok) {
 			ghactionInformation(`Status Code: ${response.status}\nResponse: ${responseText}`);
 		} else {
 			throw new Error(`Status Code: ${response.status}\nResponse: ${responseText}`);
@@ -120,7 +117,7 @@ function $importInput(key) {
 				}
 			);
 			let responseText = await response.text();
-			if (response.ok === true) {
+			if (response.ok) {
 				ghactionInformation(`Status Code: ${response.status}\nResponse: ${responseText}`);
 			} else {
 				throw new Error(`Status Code: ${response.status}\nResponse: ${responseText}`);
