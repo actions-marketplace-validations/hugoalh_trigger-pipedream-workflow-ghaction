@@ -17,7 +17,35 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - run: "${{github.action_path}}/../main.ps1 -DryRun $${{inputs.dryrun}} -Key '${{inputs.key}}' -Payload '${{inputs.payload}}'"
+    - name: "Modify PowerShell Gallery Installation Policy"
+      id: "psgip"
+      run: |
+        Write-Host -Object "::set-output name=installationpolicy::$((Get-PSRepository -Name PSGallery).InstallationPolicy)"
+        Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
+      shell: "pwsh"
+    - name: "Setup PowerShellGet"
+      run: |
+        if (Get-InstalledModule -Name PowerShellGet -MinimumVersion 2.2.5 -ErrorAction SilentlyContinue) {} else {
+          Install-Module -AcceptLicense -Name PowerShellGet -Scope AllUsers -Verbose
+        }
+      shell: "pwsh"
+    - name: "Update PowerShell Modules"
+      run: |
+        Update-Module -AcceptLicense -Scope AllUsers -Verbose
+      shell: "pwsh"
+    - name: "Setup Action's Dependencies"
+      run: |
+        if (Get-InstalledModule -Name 'hugoalh.GitHubActionsToolkit' -MinimumVersion 0.1.0 -ErrorAction SilentlyContinue) {} else {
+          Install-Module -AcceptLicense -Name 'hugoalh.GitHubActionsToolkit' -Scope CurrentUser -Verbose
+        }
+      shell: "pwsh"
+    - name: "Execute Main Action"
+      run: "${{github.action_path}}/../main.ps1 -DryRun $${{inputs.dryrun}} -Key '${{inputs.key}}' -Payload '${{inputs.payload}}'"
+      shell: "pwsh"
+    - name: "Revert Modify PowerShell Gallery Installation Policy"
+      if: "${{steps.psgip.outputs.installationpolicy != '' && always()}}"
+      run: |
+        Set-PSRepository -Name PSGallery -InstallationPolicy '${{steps.psgip.outputs.installationpolicy}}'
       shell: "pwsh"
 branding:
   icon: "zap"
