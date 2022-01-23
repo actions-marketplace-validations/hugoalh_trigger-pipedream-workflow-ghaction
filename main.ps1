@@ -4,7 +4,7 @@ param (
 	[Parameter(Mandatory = $true, Position = 2, ValueFromPipeline = $true)][ValidateNotNullOrEmpty()][string]$Payload
 )
 Import-Module -Name 'hugoalh.GitHubActionsToolkit' -Scope Local
-[string]$GHActionUserAgent = 'TriggerPipedreamWorkflow.GitHubAction/2.1.0'
+[string]$GHActionUserAgent = 'TriggerPipedreamWorkflow.GitHubAction/2.1.1'
 [string]$REPipedreamWebhookURL = '^https:\/\/(?<Key>[\da-zA-Z_-]+)\.m\.pipedream\.net$'
 if ($Key -cmatch $REPipedreamWebhookURL) {
 	$Key -creplace $REPipedreamWebhookURL,'${Key}'

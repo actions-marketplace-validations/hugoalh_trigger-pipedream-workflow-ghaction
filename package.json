@@ -1,6 +1,6 @@
 {
 	"name": "@hugoalh/trigger-pipedream-workflow-ghaction",
-	"version": "2.1.0",
+	"version": "2.1.1",
 	"description": "A GitHub Action to trigger Pipedream workflow via SDK or webhook.",
 	"keywords": [
 		"github-action",
