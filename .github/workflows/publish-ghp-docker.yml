@@ -47,7 +47,7 @@ jobs:
             org.opencontainers.image.title=Trigger Pipedream Workflow (GitHub Action) Image
             org.opencontainers.image.description=A Docker image for Trigger Pipedream Workflow (GitHub Action) to trigger Pipedream workflow via SDK or webhook.
       - name: "Build & Push Docker Image"
-        uses: "docker/build-push-action@v2.8.0"
+        uses: "docker/build-push-action@v2.9.0"
         with:
           context: "./"
           file: "Dockerfile"
