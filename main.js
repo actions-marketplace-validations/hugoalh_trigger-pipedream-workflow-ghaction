@@ -1,130 +1,93 @@
-import { debug as ghactionDebug, error as ghactionError, getInput as ghactionGetInput, info as ghactionInformation, setSecret as ghactionSetSecret } from "@actions/core";
+import { Chalk } from "chalk";
+import { endGroup as ghactionsEndGroup, error as ghactionsError, getInput as ghactionsGetInput, info as ghactionsInformation, setSecret as ghactionsSetSecret, startGroup as ghactionsStartGroup } from "@actions/core";
 import { isJSON as adIsJSON, isString as adIsString } from "@hugoalh/advanced-determine";
-import { stringParse as mmStringParse } from "@hugoalh/more-method";
-const ghactionUserAgent = "TriggerPipedreamWorkflow.GitHubAction/2.1.1";
-const rePipedreamSDKURL = /^https:\/\/sdk\.m\.pipedream\.net\/pipelines\/(?<key>[\da-zA-Z_-]+)\/events$/gu;
-const rePipedreamWebhookURL = /^https:\/\/(?<key>[\da-zA-Z_-]+)\.m\.pipedream\.net$/gu;
-/**
- * @private
- * @function $importInput
- * @param {string} key
- * @returns {string}
- */
-function $importInput(key) {
-	ghactionDebug(`Import input \`${key}\`.`);
-	return ghactionGetInput(key);
-};
+import yaml from "yaml";
+const ghactionsChalk = new Chalk({ level: 3 });
+const pipedreamSDKURLRegExp = /^https:\/\/sdk\.m\.pipedream\.net\/pipelines\/(?<key>[\da-zA-Z_-]+)\/events$/gu;
+const pipedreamWebhookURLRegExp = /^https:\/\/(?<key>[\da-zA-Z_-]+)\.m\.pipedream\.net$/gu;
 (async () => {
-	ghactionInformation(`Import inputs.`);
-	let dryRun = mmStringParse($importInput("dryrun"));
-	if (typeof dryRun !== "boolean") {
-		throw new TypeError(`Input \`dryrun\` must be type of boolean!`);
-	};
-	let key = $importInput("key");
-	if (!adIsString(key, { empty: false, singleLine: true })) {
+	ghactionsStartGroup(`Import inputs.`);
+	let key = ghactionsGetInput("key");
+	if (!adIsString(key, {
+		empty: false,
+		singleLine: true
+	})) {
 		throw new TypeError(`Input \`key\` must be type of string (non-empty)!`);
 	};
-	let method = $importInput("method").toLowerCase();
+	let method = ghactionsGetInput("method").toLowerCase();
 	if (
 		key.search(/^[\da-z_-]+$/giu) === 0 ||
-		key.search(rePipedreamSDKURL) === 0
+		key.search(pipedreamSDKURLRegExp) === 0
 	) {
-		key = key.replace(rePipedreamSDKURL, "$<key>");
+		key = key.replace(pipedreamSDKURLRegExp, "$<key>");
 		if (method.length === 0) {
 			method = "sdk";
 		};
-	} else if (key.search(rePipedreamWebhookURL) === 0) {
-		key = key.replace(rePipedreamWebhookURL, "$<key>");
+	} else if (key.search(pipedreamWebhookURLRegExp) === 0) {
+		key = key.replace(pipedreamWebhookURLRegExp, "$<key>");
 		if (method.length === 0) {
 			method = "webhook";
 		};
 	} else {
-		throw new TypeError(`Input \`key\` must be type of string (non-empty)!`);
+		throw new TypeError(`Input \`key\` is not a valid Pipedream key!`);
 	};
-	ghactionSetSecret(key);
+	ghactionsSetSecret(key);
 	if (method !== "sdk" && method !== "webhook") {
-		throw new SyntaxError(`Input \`method\`'s value is not in the list!`);
+		throw new SyntaxError(`Input \`method\`'s value \`${method}\` is not a valid Pipedream trigger method!`);
 	};
-	let payload = mmStringParse($importInput("payload"));
+	let payload = yaml.parse(ghactionsGetInput("payload"));
 	if (!adIsJSON(payload)) {
-		throw new TypeError(`Input \`payload\` must be type of JSON!`);
+		throw new TypeError(`\`${payload}\` is not a valid Pipedream JSON/YAML/YML payload!`);
 	};
 	let payloadStringify = JSON.stringify(payload);
-	if (dryRun) {
-		ghactionInformation(`Payload Content: ${payloadStringify}`);
-		let payloadFakeStringify = JSON.stringify({
-			body: "bar",
-			title: "foo",
-			userId: 1
+	ghactionsInformation(`${ghactionsChalk.bold("Method:")} ${method}`);
+	ghactionsInformation(`${ghactionsChalk.bold("Payload Content:")} ${payloadStringify}`);
+	ghactionsEndGroup();
+	ghactionsStartGroup(`Post network request to Pipedream.`);
+	if (method === "sdk") {
+		const axios = (await import("axios")).default;
+		let response = await axios.request({
+			data: JSON.stringify({
+				"raw_event": payload
+			}),
+			headers: {
+				"content-type": "application/json",
+				"user-agent": "pdsdk:javascript/1",
+				"x-pd-sdk-version": "0.3.2"
+			},
+			method: "post",
+			url: `https://sdk.m.pipedream.net/pipelines/${key}/events`
 		});
-		ghactionInformation(`Post network request to test service.`);
+		let result = `${ghactionsChalk.bold("Status Code:")} ${response.status}\n${ghactionsChalk.bold("Response:")} ${response.data}`;
+		if (response.statusText !== "OK") {
+			throw new Error(result);
+		};
+		ghactionsInformation(result);
+	} else {
 		const nodeFetch = (await import("node-fetch")).default;
 		let response = await nodeFetch(
-			`https://jsonplaceholder.typicode.com/posts`,
+			`https://${key}.m.pipedream.net`,
 			{
-				body: payloadFakeStringify,
-				follow: 5,
+				body: payloadStringify,
+				follow: 1,
 				headers: {
 					"Content-Type": "application/json",
-					"User-Agent": ghactionUserAgent
+					"User-Agent": "TriggerPipedreamWorkflow.GitHubAction/2.2.0"
 				},
 				method: "POST",
 				redirect: "follow"
 			}
 		);
 		let responseText = await response.text();
-		if (response.ok) {
-			ghactionInformation(`Status Code: ${response.status}\nResponse: ${responseText}`);
-		} else {
-			throw new Error(`Status Code: ${response.status}\nResponse: ${responseText}`);
+		let result = `${ghactionsChalk.bold("Status Code:")} ${response.status}\n${ghactionsChalk.bold("Response:")} ${responseText}`;
+		if (!response.ok) {
+			throw new Error(result);
 		};
-	} else {
-		ghactionDebug(`Payload Content: ${payloadStringify}`);
-		if (method === "sdk") {
-			ghactionInformation(`Post network request to Pipedream SDK.`);
-			const axios = (await import("axios")).default;
-			let response = await axios.request({
-				data: JSON.stringify({
-					"raw_event": payload
-				}),
-				headers: {
-					"content-type": "application/json",
-					"user-agent": "pdsdk:javascript/1",
-					"x-pd-sdk-version": "0.3.2"
-				},
-				method: "post",
-				url: `https://sdk.m.pipedream.net/pipelines/${key}/events`
-			});
-			if (response.statusText === "OK") {
-				ghactionInformation(`Status Code: ${response.status}\nResponse: ${response.data}`);
-			} else {
-				throw new Error(`Status Code: ${response.status}\nResponse: ${response.data}`);
-			};
-		} else {
-			ghactionInformation(`Post network request to Pipedream webhook.`);
-			const nodeFetch = (await import("node-fetch")).default;
-			let response = await nodeFetch(
-				`https://${key}.m.pipedream.net`,
-				{
-					body: payloadStringify,
-					follow: 5,
-					headers: {
-						"Content-Type": "application/json",
-						"User-Agent": ghactionUserAgent
-					},
-					method: "POST",
-					redirect: "follow"
-				}
-			);
-			let responseText = await response.text();
-			if (response.ok) {
-				ghactionInformation(`Status Code: ${response.status}\nResponse: ${responseText}`);
-			} else {
-				throw new Error(`Status Code: ${response.status}\nResponse: ${responseText}`);
-			};
-		};
+		ghactionsInformation(result);
 	};
+	ghactionsEndGroup();
 })().catch((reason) => {
-	ghactionError(reason);
+	ghactionsError(reason);
+	ghactionsEndGroup();
 	process.exit(1);
 });

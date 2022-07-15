@@ -1,4 +1,3 @@
-# $<Schema>$ https://docs.github.com/en/actions/creating-actions/metadata-syntax-for-github-actions
 name: "Trigger Pipedream Workflow"
 author: "hugoalh"
 description: "Trigger Pipedream workflow via SDK or webhook."
@@ -10,42 +9,35 @@ inputs:
     description: "{object} JSON payload."
     required: false
     default: "{}"
-  dryrun:
-    description: "{boolean} Dry run."
-    required: false
-    default: "false"
 runs:
   using: "composite"
   steps:
-    - name: "Modify PowerShell Gallery Installation Policy"
-      id: "psgip"
+    - name: "Modify PowerShell Repository"
+      id: "modify-powershell-repository"
       run: |
-        Write-Host -Object "::set-output name=installationpolicy::$((Get-PSRepository -Name PSGallery).InstallationPolicy)"
-        Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
+        Write-Host -Object "::set-output name=installation-policy::$((Get-PSRepository -Name 'PSGallery').InstallationPolicy)"
+        Set-PSRepository -Name 'PSGallery' -InstallationPolicy 'Trusted' -Verbose
       shell: "pwsh"
     - name: "Setup PowerShellGet"
       run: |
-        if (Get-InstalledModule -Name PowerShellGet -MinimumVersion 2.2.5 -ErrorAction SilentlyContinue) {} else {
-          Install-Module -AcceptLicense -Name PowerShellGet -Scope AllUsers -Verbose
-        }
+        Install-Module -Name 'PowerShellGet' -MinimumVersion '2.2.5' -Scope 'AllUsers' -AcceptLicense -Verbose
       shell: "pwsh"
     - name: "Update PowerShell Modules"
       run: |
-        Update-Module -AcceptLicense -Scope AllUsers -Verbose
+        Update-Module -Scope 'AllUsers' -AcceptLicense -Verbose
       shell: "pwsh"
     - name: "Setup Action's Dependencies"
       run: |
-        if (Get-InstalledModule -Name 'hugoalh.GitHubActionsToolkit' -MinimumVersion 0.1.0 -ErrorAction SilentlyContinue) {} else {
-          Install-Module -AcceptLicense -Name 'hugoalh.GitHubActionsToolkit' -Scope CurrentUser -Verbose
-        }
+        Install-Module -Name 'hugoalh.GitHubActionsToolkit' -MinimumVersion '0.5.0' -Scope 'CurrentUser' -AcceptLicense -Verbose
       shell: "pwsh"
     - name: "Execute Main Action"
-      run: "${{github.action_path}}/../main.ps1 -DryRun $${{inputs.dryrun}} -Key '${{inputs.key}}' -Payload '${{inputs.payload}}'"
-      shell: "pwsh"
-    - name: "Revert Modify PowerShell Gallery Installation Policy"
-      if: "${{steps.psgip.outputs.installationpolicy != '' && always()}}"
       run: |
-        Set-PSRepository -Name PSGallery -InstallationPolicy '${{steps.psgip.outputs.installationpolicy}}'
+        ${{github.action_path}}/../main.ps1 -Key '${{inputs.key}}' -Payload '${{inputs.payload}}'
+      shell: "pwsh"
+    - name: "Revert Modify PowerShell Repository"
+      if: "${{steps.modify-powershell-repository.outcome == 'success' && always()}}"
+      run: |
+        Set-PSRepository -Name 'PSGallery' -InstallationPolicy '${{steps.modify-powershell-repository.outputs.installation-policy}}'
       shell: "pwsh"
 branding:
   icon: "zap"

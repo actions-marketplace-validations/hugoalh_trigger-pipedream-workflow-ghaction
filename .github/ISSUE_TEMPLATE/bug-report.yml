@@ -1,8 +1,7 @@
-# $<Schema>$ https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/syntax-for-issue-forms
 name: "Bug Report (Form)"
 description: "Report a bug."
 labels:
-  - "Status/Unread 🔵"
+  - "Status/Pending 🔵"
   - "Type/Bug 🐛"
 body:
   - type: "textarea"
@@ -19,6 +18,10 @@ body:
       description: "What versions are affected? Versions must be listed as supported in the Security Policy (/.github/SECURITY.md)."
       multiple: true
       options:
+        - "v2.2.0-beta.1+default"
+        - "v2.2.0-beta.1+docker"
+        - "v2.2.0-beta.1+nodejs"
+        - "v2.2.0-beta.1+powershell"
         - "v2.1.1+default"
         - "v2.1.1+docker"
         - "v2.1.1+nodejs"

@@ -1,33 +1,23 @@
-param (
-	[Parameter()][boolean]$DryRun,
-	[Parameter(Mandatory = $true, Position = 1)][ValidatePattern('^([\da-zA-Z_-]+|https:\/\/[\da-zA-Z_-]+\.m\.pipedream\.net)$')][string]$Key,
-	[Parameter(Mandatory = $true, Position = 2, ValueFromPipeline = $true)][ValidateNotNullOrEmpty()][string]$Payload
+#Requires -PSEdition Core
+#Requires -Version 7.2
+Param (
+	[Parameter(Mandatory = $True, Position = 1)][ValidatePattern('^([\da-zA-Z_-]+|https:\/\/[\da-zA-Z_-]+\.m\.pipedream\.net)$', ErrorMessage = 'Input `key` is not a valid Pipedream key!')][String]$Key,
+	[Parameter(Mandatory = $True, Position = 2)][String]$Payload
 )
-Import-Module -Name 'hugoalh.GitHubActionsToolkit' -Scope Local
-[string]$GHActionUserAgent = 'TriggerPipedreamWorkflow.GitHubAction/2.1.1'
-[string]$REPipedreamWebhookURL = '^https:\/\/(?<Key>[\da-zA-Z_-]+)\.m\.pipedream\.net$'
-if ($Key -cmatch $REPipedreamWebhookURL) {
-	$Key -creplace $REPipedreamWebhookURL,'${Key}'
+Import-Module -Name 'hugoalh.GitHubActionsToolkit' -Scope 'Local'
+[RegEx]$PipedreamWebhookURLRegEx = '^https:\/\/(?<Key>[\da-zA-Z_-]+)\.m\.pipedream\.net$'
+Enter-GitHubActionsLogGroup -Title 'Import inputs.'
+If ($Key -imatch $PipedreamWebhookURLRegEx) {
+	$Key = $Key -ireplace $PipedreamWebhookURLRegEx, '${Key}'
 }
-Add-GHActionsSecretMask -Value $Key
-[string]$PayloadStringify = (ConvertFrom-Json -InputObject $Payload -Depth 100 | ConvertTo-Json -Compress -Depth 100)
-if ($DryRun) {
-	Write-Host -Object "Payload Content: $PayloadStringify"
-	[string]$PayloadFakeStringify = (ConvertFrom-Json -InputObject '{"body": "bar", "title": "foo", "userId": 1}' -Depth 100 | ConvertTo-Json -Compress -Depth 100)
-	Write-Host -Object "Post network request to test service."
-	[pscustomobject]$Response = Invoke-WebRequest -UseBasicParsing -Uri 'https://jsonplaceholder.typicode.com/posts' -UserAgent $GHActionUserAgent -MaximumRedirection 5 -Method Post -Body $PayloadFakeStringify -ContentType 'application/json; charset=utf-8'
-	$Response.PSObject.Properties | ForEach-Object -Process {
-		Enter-GHActionsLogGroup -Title $_.Name
-		Write-Host -Object "$($_.Value | ConvertTo-Json -Compress -Depth 100)"
-		Exit-GHActionsLogGroup
-	}
-} else {
-	Write-GHActionsDebug -Message "Payload Content: $PayloadStringify"
-	Write-Host -Object 'Post network request to Pipedream webhook.'
-	[pscustomobject]$Response = Invoke-WebRequest -UseBasicParsing -Uri "https://$Key.m.pipedream.net" -UserAgent $GHActionUserAgent -MaximumRedirection 5 -Method Post -Body $PayloadStringify -ContentType 'application/json; charset=utf-8'
-	$Response.PSObject.Properties | ForEach-Object -Process {
-		Enter-GHActionsLogGroup -Title $_.Name
-		Write-GHActionsDebug -Message ($_.Value | ConvertTo-Json -Compress -Depth 100)
-		Exit-GHActionsLogGroup
-	}
+Add-GitHubActionsSecretMask -Value $Key
+Try {
+	[String]$PayloadStringify = ($Payload | ConvertFrom-Json -Depth 100 | ConvertTo-Json -Depth 100 -Compress)
+} Catch {
+	Write-GitHubActionsFail -Message "``$Payload`` is not a valid Pipedream JSON payload!"
 }
+Write-Host -Object "$($PSStyle.Bold)Payload Content:$($PSStyle.Reset) $PayloadStringify"
+Exit-GitHubActionsLogGroup
+Enter-GitHubActionsLogGroup -Title 'Post network request to Pipedream.'
+Invoke-WebRequest -Uri "https://$Key.m.pipedream.net" -UseBasicParsing -UserAgent 'TriggerPipedreamWorkflow.GitHubAction/2.2.0' -MaximumRedirection 1 -MaximumRetryCount 5 -RetryIntervalSec 5 -Method 'Post' -Body $PayloadStringify -ContentType 'application/json; charset=utf-8' | Format-List -Property '*' | Out-String
+Exit-GitHubActionsLogGroup

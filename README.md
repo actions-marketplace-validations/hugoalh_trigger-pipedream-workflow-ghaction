@@ -25,73 +25,30 @@ A GitHub Action to trigger Pipedream workflow via SDK or webhook.
 
 ## 📚 Documentation
 
-> **⚠ Important:** This documentation is v2.1.0 based; To view other tag's/version's documentation, please visit the [tag/version list](https://github.com/hugoalh/trigger-pipedream-workflow-ghaction/tags) and select the correct tag/version.
+> **⚠ Important:** This documentation is v2.2.0 based; To view other tag's/version's documentation, please visit the [tag/version list](https://github.com/hugoalh/trigger-pipedream-workflow-ghaction/tags) and select the correct tag/version.
 
 ### 🎯 Entrypoint / Target
 
-#### Default (`+default`)
-
-> **⚠ Important:** This entrypoint is currently based to <kbd>Docker (`+docker`)</kbd>, base can be changed between versions without announcement to ensure the stability.
-
 ```yml
 jobs:
   job_id:
-    runs-on: # Depend on the base requirement, recommended "ubuntu-________"
+    runs-on: "________"
     steps:
-      - uses: "hugoalh/trigger-pipedream-workflow-ghaction@<tag/version>"
+      - uses: "hugoalh/trigger-pipedream-workflow-ghaction________@<tag/version>"
 ```
 
-##### Require Software
-
-*Depend on the base requirement.*
-
-#### Docker (`+docker`)
-
-```yml
-jobs:
-  job_id:
-    runs-on: "ubuntu-________"
-    steps:
-      - uses: "hugoalh/trigger-pipedream-workflow-ghaction/use-docker@<tag/version>"
-```
-
-##### Require Software
-
-- Docker
-
-#### NodeJS (`+nodejs`)
-
-> **⚠ Important:** This entrypoint maybe need extra steps to manually setup NodeJS version.
-
-```yml
-jobs:
-  job_id:
-    runs-on: *any*
-    steps:
-      - uses: "hugoalh/trigger-pipedream-workflow-ghaction/use-nodejs@<tag/version>"
-```
-
-##### Require Software
-
-- NodeJS (>= v14.15.0) + NPM (>= v6.14.8)
-
-#### PowerShell (`+powershell`)
+|  | **`jobs.job_id.runs-on`** | **`jobs.job_id.steps[*].uses`** | **Require Software** |
+|:-:|:-:|:-:|:-:|
+| **Default (`+default`)** | `ubuntu-________` | *None* | Docker |
+| **Docker (`+docker`)** | `ubuntu-________` | `/use-docker` | Docker |
+| **NodeJS (`+nodejs`)** | Any | `/use-nodejs` | NodeJS (>= v14.15.0) + NPM (>= v6.14.8) |
+| **PowerShell (`+powershell`)** | Any | `/use-powershell` | PowerShell (>= v7.2.0) |
 
 > **⚠ Important:**
-> - This entrypoint is suitable for advanced user.
-> - This entrypoint's input `method` is always `"webhook"`.
-
-```yml
-jobs:
-  job_id:
-    runs-on: *any*
-    steps:
-      - uses: "hugoalh/trigger-pipedream-workflow-ghaction/use-powershell@<tag/version>"
-```
-
-##### Require Software
-
-- PowerShell (>= v7.2.0)
+>
+> - Default entrypoint is currently based to Docker (`+docker`), base can be changed between versions without announcement to ensure the stability.
+> - NodeJS entrypoint maybe need extra steps to manually setup NodeJS version.
+> - PowerShell entrypoint is suitable for advanced user.
 
 ### 📥 Input
 
@@ -128,11 +85,9 @@ When this input is not defined, and input `key` is a:
 
 #### `payload`
 
-**\[Optional\]** `<object = {}>` JSON payload.
+**\[Optional\]** `<object>` JSON/YAML/YML payload.
 
-#### `dryrun`
-
-**\[Optional\]** `<boolean = false>` Dry run; For debug use.
+> **⚠ Important:** PowerShell entrypoint only accept JSON payload.
 
 ### 📤 Output
 
@@ -146,13 +101,11 @@ jobs:
     name: "Trigger Pipedream Workflow"
     runs-on: "ubuntu-latest"
     steps:
-      - uses: "hugoalh/trigger-pipedream-workflow-ghaction@v2.0.0"
+      - uses: "hugoalh/trigger-pipedream-workflow-ghaction@v2.2.0"
         with:
           key: "${{secrets.PIPEDREAM_WORKFLOW_KEY}}"
           payload: |
-            {
-              "message": "Hello, world!"
-            }
+            message: "Hello, world!"
 ```
 
 ### Guide

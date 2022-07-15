@@ -5,7 +5,7 @@
 > | **Legend** | **Description** |
 > |:-:|:--|
 > | L | **LTS:** Long term supported. |
-> | ✔ | **Yes:** Supported. |
+> | ✔ | **Active / Current:** Currently supported. |
 > | 👎{🐛} | **Partly (Issue):** Partly supported due to confirmed contains bugs and/or issues. |
 > | 👎{🧓} | **Partly (Old):** Partly supported due to deprecated by newer versions. |
 > | ❌{🐛} | **No (Issue):** Not supported due to confirmed contains bugs and/or issues. |
@@ -13,8 +13,9 @@
 
 | **Tag / Version** | **Target** | **Support** |
 |:-:|:-:|:-:|
-| v2.1.X | Docker, NodeJS v14.15.0 + NPM v6.14.8, PowerShell v7.2.0 | L |
-| v2.0.X | Docker, NodeJS v14.15.0 + NPM v6.14.8, PowerShell v7.1.0 | L |
+| v2.2.X | Docker, NodeJS v14.15.0 + NPM v6.14.8, PowerShell v7.2.0 | L |
+| v2.1.X | Docker, NodeJS v14.15.0 + NPM v6.14.8, PowerShell v7.2.0 | 👎{🧓} |
+| v2.0.X | Docker, NodeJS v14.15.0 + NPM v6.14.8, PowerShell v7.1.0 | 👎{🧓} |
 | v1.X.X | NodeJS v12.13.0 + NPM v6.12.0 | ❌{🐛🧓} |
 
 ## Report Vulnerability

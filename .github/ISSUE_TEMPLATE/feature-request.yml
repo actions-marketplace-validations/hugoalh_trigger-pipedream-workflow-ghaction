@@ -1,8 +1,7 @@
-# $<Schema>$ https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/syntax-for-issue-forms
 name: "Feature Request (Form)"
 description: "Suggest an idea."
 labels:
-  - "Status/Unread 🔵"
+  - "Status/Pending 🔵"
   - "Type/Enhancement ➕"
 body:
   - type: "textarea"
