@@ -35,13 +35,13 @@ const pipedreamWebhookURLRegExp = /^https:\/\/(?<key>[\da-zA-Z_-]+)\.m\.pipedrea
 	if (method !== "sdk" && method !== "webhook") {
 		throw new SyntaxError(`Input \`method\`'s value \`${method}\` is not a valid Pipedream trigger method!`);
 	};
+	ghactionsInformation(`${ghactionsChalk.bold("Method:")} ${method}`);
 	let payload = yaml.parse(ghactionsGetInput("payload"));
 	if (!adIsJSON(payload)) {
 		throw new TypeError(`\`${payload}\` is not a valid Pipedream JSON/YAML/YML payload!`);
 	};
 	let payloadStringify = JSON.stringify(payload);
-	ghactionsInformation(`${ghactionsChalk.bold("Method:")} ${method}`);
-	ghactionsInformation(`${ghactionsChalk.bold("Payload Content:")} ${payloadStringify}`);
+	ghactionsInformation(`${ghactionsChalk.bold("Payload:")} ${payloadStringify}`);
 	ghactionsEndGroup();
 	ghactionsStartGroup(`Post network request to Pipedream.`);
 	if (method === "sdk") {

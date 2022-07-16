@@ -16,7 +16,7 @@ Try {
 } Catch {
 	Write-GitHubActionsFail -Message "``$Payload`` is not a valid Pipedream JSON payload!"
 }
-Write-Host -Object "$($PSStyle.Bold)Payload Content:$($PSStyle.Reset) $PayloadStringify"
+Write-Host -Object "$($PSStyle.Bold)Payload:$($PSStyle.Reset) $PayloadStringify"
 Exit-GitHubActionsLogGroup
 Enter-GitHubActionsLogGroup -Title 'Post network request to Pipedream.'
 Invoke-WebRequest -Uri "https://$Key.m.pipedream.net" -UseBasicParsing -UserAgent 'TriggerPipedreamWorkflow.GitHubAction/2.2.0' -MaximumRedirection 1 -MaximumRetryCount 5 -RetryIntervalSec 5 -Method 'Post' -Body $PayloadStringify -ContentType 'application/json; charset=utf-8' | Format-List -Property '*' | Out-String
