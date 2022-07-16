@@ -1,7 +1,7 @@
 import { dirname as pathDirectoryName } from "path";
 import { exec as childProcessExecute } from "child_process";
 import { fileURLToPath } from "url";
-const ghactionsDirectory = pathDirectoryName(fileURLToPath(import.meta.url));
+const ghactionsActionDirectory = pathDirectoryName(fileURLToPath(import.meta.url));
 /**
  * @private
  * @function $execute
@@ -13,7 +13,7 @@ function $execute(command) {
 		childProcessExecute(
 			command,
 			{
-				cwd: ghactionsDirectory,
+				cwd: ghactionsActionDirectory,
 				encoding: "utf8",
 				windowsHide: true
 			},
