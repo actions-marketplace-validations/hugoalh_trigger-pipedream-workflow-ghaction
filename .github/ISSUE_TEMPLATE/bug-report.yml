@@ -18,10 +18,10 @@ body:
       description: "What versions are affected? Versions must be listed as supported in the Security Policy (/.github/SECURITY.md)."
       multiple: true
       options:
-        - "v2.2.0-beta.1+default"
-        - "v2.2.0-beta.1+docker"
-        - "v2.2.0-beta.1+nodejs"
-        - "v2.2.0-beta.1+powershell"
+        - "v2.2.0+default"
+        - "v2.2.0+docker"
+        - "v2.2.0+nodejs"
+        - "v2.2.0+powershell"
         - "v2.1.1+default"
         - "v2.1.1+docker"
         - "v2.1.1+nodejs"
