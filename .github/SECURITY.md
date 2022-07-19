@@ -15,7 +15,7 @@
 |:-:|:-:|:-:|
 | v2.2.X | Docker, NodeJS v14.15.0 + NPM v6.14.8, PowerShell v7.2.0 | L |
 | v2.1.X | Docker, NodeJS v14.15.0 + NPM v6.14.8, PowerShell v7.2.0 | 👎{🧓} |
-| v2.0.X | Docker, NodeJS v14.15.0 + NPM v6.14.8, PowerShell v7.1.0 | 👎{🧓} |
+| v2.0.X | Docker, NodeJS v14.15.0 + NPM v6.14.8, PowerShell v7.1.0 | ❌{🧓} |
 | v1.X.X | NodeJS v12.13.0 + NPM v6.12.0 | ❌{🐛🧓} |
 
 ## Report Vulnerability
