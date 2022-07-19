@@ -29,7 +29,7 @@
 		"@hugoalh/advanced-determine": "^7.1.0",
 		"axios": "^0.27.2",
 		"chalk": "^5.0.1",
-		"node-fetch": "^3.2.8",
+		"node-fetch": "^3.2.9",
 		"yaml": "^2.1.1"
 	},
 	"devDependencies": {
