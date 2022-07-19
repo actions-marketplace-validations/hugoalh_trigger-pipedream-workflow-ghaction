@@ -10,7 +10,7 @@ jobs:
     steps:
       - uses: "hugoalh/send-discord-webhook-ghaction/use-nodejs@v4.2.2"
         with:
-          key: "${{secrets.DISCORD_WEBHOOK_HXHS_PROJECTNEWRELEASEANNOUNCER}}"
+          key: "${{secrets.DISCORD_HXHS_PROJECTNEWRELEASEANNOUNCER_WEBHOOK}}"
           payload: |
             embeds:
               - title: "Trigger Pipedream Workflow (GitHub Action)"
