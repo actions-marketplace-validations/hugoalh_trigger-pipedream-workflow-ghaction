@@ -14,7 +14,7 @@ inputs:
     default: "{}"
 runs:
   using: "docker"
-  image: "docker://ghcr.io/hugoalh/trigger-pipedream-workflow-ghaction:2.2.1"
+  image: "docker://ghcr.io/hugoalh/trigger-pipedream-workflow-ghaction:2.2.2"
 branding:
   icon: "zap"
   color: "green"
