@@ -19,5 +19,5 @@ Try {
 Write-Host -Object "$($PSStyle.Bold)Payload:$($PSStyle.BoldOff) $PayloadStringify"
 Exit-GitHubActionsLogGroup
 Enter-GitHubActionsLogGroup -Title 'Post network request to Pipedream.'
-Invoke-WebRequest -Uri "https://$Key.m.pipedream.net" -UseBasicParsing -UserAgent "PowerShell/$($PSVersionTable.PSVersion.ToString()) TriggerPipedreamWorkflow.GitHubAction/2.2.2" -MaximumRedirection 1 -MaximumRetryCount 5 -RetryIntervalSec 5 -Method 'Post' -Body $PayloadStringify -ContentType 'application/json; charset=utf-8' | Format-List -Property '*' | Out-String
+Invoke-WebRequest -Uri "https://$Key.m.pipedream.net" -UseBasicParsing -UserAgent "PowerShell/$($PSVersionTable.PSVersion.ToString()) TriggerPipedreamWorkflow.GitHubAction/2.2.3" -MaximumRedirection 1 -MaximumRetryCount 5 -RetryIntervalSec 5 -Method 'Post' -Body $PayloadStringify -ContentType 'application/json; charset=utf-8' | Format-List -Property '*' | Out-String
 Exit-GitHubActionsLogGroup

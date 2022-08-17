@@ -72,7 +72,7 @@ const pipedreamWebhookURLRegExp = /^https:\/\/(?<key>[\da-zA-Z_-]+)\.m\.pipedrea
 				follow: 1,
 				headers: {
 					"Content-Type": "application/json",
-					"User-Agent": `NodeJS/${process.versions.node} TriggerPipedreamWorkflow.GitHubAction/2.2.2`
+					"User-Agent": `NodeJS/${process.versions.node} TriggerPipedreamWorkflow.GitHubAction/2.2.3`
 				},
 				method: "POST",
 				redirect: "follow"
