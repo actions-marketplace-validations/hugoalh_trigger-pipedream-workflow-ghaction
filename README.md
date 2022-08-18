@@ -9,8 +9,6 @@
 [![GitHub Forks](https://img.shields.io/github/forks/hugoalh/trigger-pipedream-workflow-ghaction?label=Forks&logo=github&logoColor=ffffff&style=flat-square)](https://github.com/hugoalh/trigger-pipedream-workflow-ghaction/network/members)
 ![GitHub Languages](https://img.shields.io/github/languages/count/hugoalh/trigger-pipedream-workflow-ghaction?label=Languages&logo=github&logoColor=ffffff&style=flat-square)
 [![CodeFactor Grade](https://img.shields.io/codefactor/grade/github/hugoalh/trigger-pipedream-workflow-ghaction?label=Grade&logo=codefactor&logoColor=ffffff&style=flat-square)](https://www.codefactor.io/repository/github/hugoalh/trigger-pipedream-workflow-ghaction)
-[![LGTM Alerts](https://img.shields.io/lgtm/alerts/g/hugoalh/trigger-pipedream-workflow-ghaction?label=Alerts&logo=lgtm&logoColor=ffffff&style=flat-square)
-![LGTM Grade](https://img.shields.io/lgtm/grade/javascript/g/hugoalh/trigger-pipedream-workflow-ghaction?label=Grade&logo=lgtm&logoColor=ffffff&style=flat-square)](https://lgtm.com/projects/g/hugoalh/trigger-pipedream-workflow-ghaction)
 [![License](https://img.shields.io/static/v1?label=License&message=MIT&style=flat-square)](./LICENSE.md)
 
 | **Release** | **Latest** (![GitHub Latest Release Date](https://img.shields.io/github/release-date/hugoalh/trigger-pipedream-workflow-ghaction?label=%20&style=flat-square)) | **Pre** (![GitHub Latest Pre-Release Date](https://img.shields.io/github/release-date-pre/hugoalh/trigger-pipedream-workflow-ghaction?label=%20&style=flat-square)) |
