@@ -20616,7 +20616,7 @@ try {
 			"x-pd-sdk-version": "0.3.2"
 		} : {
 			"Content-Type": "application/json",
-			"User-Agent": `TriggerPipedreamWorkflow.GitHubAction/3.0.0 NodeJS/${process.versions.node}`
+			"User-Agent": `TriggerPipedreamWorkflow.GitHubAction/3.0.0 NodeJS/${process.versions.node}-${process.platform}-${process.arch}`
 		},
 		method: "POST",
 		redirect: "follow"
