@@ -58,7 +58,7 @@ try {
 		method: "POST",
 		redirect: "follow"
 	}).catch((reason) => {
-		throw new Error(`Unexpected web request issue: ${reason?.message}`);
+		throw new Error(`Unexpected web request issue: ${reason?.message ?? reason}`);
 	});
 	let responseText = await response.text();
 	ghactionsSetOutput("response", responseText);
@@ -72,7 +72,7 @@ try {
 	console.log(`${chalk.bold("Response Content:")} ${responseText}`);
 	ghactionsEndGroup();
 } catch (error) {
-	ghactionsError(error?.message);
+	ghactionsError(error?.message ?? error);
 	ghactionsEndGroup();
 	process.exit(1);
 }

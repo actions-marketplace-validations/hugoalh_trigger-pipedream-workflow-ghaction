@@ -20621,7 +20621,7 @@ try {
 		method: "POST",
 		redirect: "follow"
 	}).catch((reason) => {
-		throw new Error(`Unexpected web request issue: ${reason?.message}`);
+		throw new Error(`Unexpected web request issue: ${reason?.message ?? reason}`);
 	});
 	let responseText = await response.text();
 	(0,_actions_core__WEBPACK_IMPORTED_MODULE_1__.setOutput)("response", responseText);
@@ -20635,7 +20635,7 @@ try {
 	console.log(`${chalk.bold("Response Content:")} ${responseText}`);
 	(0,_actions_core__WEBPACK_IMPORTED_MODULE_1__.endGroup)();
 } catch (error) {
-	(0,_actions_core__WEBPACK_IMPORTED_MODULE_1__.error)(error?.message);
+	(0,_actions_core__WEBPACK_IMPORTED_MODULE_1__.error)(error?.message ?? error);
 	(0,_actions_core__WEBPACK_IMPORTED_MODULE_1__.endGroup)();
 	process.exit(1);
 }
