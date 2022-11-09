@@ -15954,8 +15954,8 @@ function $isNumber(item, {
 /**
  * @function undefinish
  * @description Undefinish coalescing.
- * @param {...any} inputs
- * @returns {any}
+ * @param {...unknown} inputs
+ * @returns {unknown}
  */
 function undefinish(...inputs) {
 	for (let input of inputs) {
